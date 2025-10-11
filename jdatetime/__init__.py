@@ -695,13 +695,22 @@ class datetime(date):
 
     def __repr__(self):
         if self.__time.tzinfo is not None:
-            return f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute}, {self.second}, {self.microsecond}, tzinfo={self.tzinfo})'
+            return (
+                f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute},'
+                f' {self.second}, {self.microsecond}, tzinfo={self.tzinfo})'
+            )
 
         if self.__time.microsecond != 0:
-            return f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute}, {self.second}, {self.microsecond})'
+            return (
+                f'jdatetime.datetime({self.year}, {self.month}, {self.day}, '
+                f'{self.hour}, {self.minute}, {self.second}, {self.microsecond})'
+            )
 
         if self.__time.second != 0:
-            return f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute}, {self.second})'
+            return (
+                f'jdatetime.datetime({self.year}, {self.month}, {self.day}, '
+                f'{self.hour}, {self.minute}, {self.second})'
+            )
 
         return f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute})'
 
