@@ -1,16 +1,18 @@
 [project]
 name = "jdatetime"
-version = "0.1.0"
 description = "Jalali datetime binding for python"
 readme = "README.rst"
+dynamic = ["version"]
 requires-python = ">=3.9"
 dependencies = [
     "jalali-core>=1.0.0",
 ]
 
+[tool.setuptools.dynamic]
+version = {attr = "jdatetime.__VERSION__"}
 
 [tool.ruff]
-line-length = 79
+line-length = 110
 format.quote-style = 'single'
 lint.isort.combine-as-imports = true
 lint.extend-select = [
