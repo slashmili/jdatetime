@@ -462,9 +462,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(jdt.minute, 7)
         self.assertEqual(jdt.locale, 'nl_NL')
 
-    def test_fromgregorian_accepts_named_argument_of_date_with_date_input(
-        self,
-    ):
+    def test_fromgregorian_accepts_named_argument_of_date_with_date_input(self):
         gdt = datetime.date(2018, 7, 15)
         jdt = jdatetime.datetime.fromgregorian(date=gdt, locale='nl_NL')
         self.assertEqual(jdt.year, 1397)
@@ -474,9 +472,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(jdt.minute, 0)
         self.assertEqual(jdt.locale, 'nl_NL')
 
-    def test_fromgregorian_accepts_named_argument_of_date_with_datetime_input(
-        self,
-    ):
+    def test_fromgregorian_accepts_named_argument_of_date_with_datetime_input(self):
         gdt = datetime.datetime(2018, 7, 15, 11, 7, 0)
         jdt = jdatetime.datetime.fromgregorian(date=gdt, locale='nl_NL')
         self.assertEqual(jdt.year, 1397)
