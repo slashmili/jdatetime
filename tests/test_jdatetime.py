@@ -133,9 +133,7 @@ class TestJDateTime(TestCase):
         self.assertFalse(today < today)
         self.assertTrue(today >= today)
         self.assertTrue(today <= today)
-        not_today = jdatetime.date(
-            today.year, today.month, today.day
-        ) + jdatetime.timedelta(days=1)
+        not_today = jdatetime.date(today.year, today.month, today.day) + jdatetime.timedelta(days=1)
         self.assertTrue(today != not_today)
 
         dtg = jdatetime.datetime(1380, 12, 1, 1, 2, 4)
@@ -167,10 +165,7 @@ class TestJDateTime(TestCase):
         )
         self.assertEqual(
             True,
-            jd_datetime
-            == jdatetime.datetime.combine(
-                d_check_with, jdatetime.time(14, 15, 16)
-            ),
+            jd_datetime == jdatetime.datetime.combine(d_check_with, jdatetime.time(14, 15, 16)),
         )
 
         gdatetime = datetime.datetime(2011, 5, 13, 14, 15, 16)
@@ -178,9 +173,7 @@ class TestJDateTime(TestCase):
 
     def test_strftime(self):
         s = jdatetime.date(1390, 2, 23)
-        string_format = (
-            '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f %z %Z'
-        )
+        string_format = '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f %z %Z'
         output = (
             'Fri Friday Ord Ordibehesht Fri Ord 23 00:00:00 '
             '1390 23 00 12 054 02 00 AM 00 6 8 02/23/90 00:00:00 90 1390 000000  '
@@ -188,9 +181,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(s.strftime(string_format), output)
 
         dt = jdatetime.datetime(1390, 2, 23, 12, 13, 14, 1)
-        unicode_format = (
-            '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f'
-        )
+        unicode_format = '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f'
         output = (
             'Fri Friday Ord Ordibehesht Fri Ord 23 12:13:14 '
             '1390 23 12 12 054 02 13 PM 14 6 8 02/23/90 12:13:14 90 1390 000001'
@@ -241,14 +232,10 @@ class TestJDateTime(TestCase):
         self.assertEqual(jdatetime.date.today().strftime('%Q'), '%Q')
 
     def test_kabiseh(self):
-        kabiseh_year = jdatetime.date.fromgregorian(
-            date=datetime.date(2013, 3, 20)
-        )
+        kabiseh_year = jdatetime.date.fromgregorian(date=datetime.date(2013, 3, 20))
         self.assertTrue(kabiseh_year.isleap())
 
-        normal_year = jdatetime.date.fromgregorian(
-            date=datetime.date(2014, 3, 20)
-        )
+        normal_year = jdatetime.date.fromgregorian(date=datetime.date(2014, 3, 20))
         self.assertFalse(normal_year.isleap())
 
         kabiseh_year = jdatetime.date(1391, 12, 30)
@@ -359,9 +346,7 @@ class TestJDateTime(TestCase):
         )
 
     def test_strptime_do_not_match_excessive_characters(self):
-        with self.assertRaises(
-            ValueError, msg='%y should not match the trailing space character'
-        ):
+        with self.assertRaises(ValueError, msg='%y should not match the trailing space character'):
             jdatetime.datetime.strptime('21 ', '%y')
 
     def test_strptime_nanoseconds(self):
@@ -401,9 +386,7 @@ class TestJDateTime(TestCase):
             ('۱۴ dey ۱۴۰۰', '%d %b %Y', (1400, 10, 14)),
         ]
         for date_string, date_format, expected_date in tests:
-            with self.subTest(
-                date_string=date_string, date_format=date_format
-            ):
+            with self.subTest(date_string=date_string, date_format=date_format):
                 date = jdatetime.datetime.strptime(date_string, date_format)
                 self.assertEqual(jdatetime.datetime(*expected_date), date)
 
@@ -447,9 +430,7 @@ class TestJDateTime(TestCase):
             ),
         ]
         for date_string, date_format, time_delta in tests:
-            with self.subTest(
-                date_string=date_string, date_format=date_format
-            ):
+            with self.subTest(date_string=date_string, date_format=date_format):
                 date = jdatetime.datetime.strptime(date_string, date_format)
                 self.assertEqual(datetime.timezone(time_delta), date.tzinfo)
 
@@ -467,9 +448,7 @@ class TestJDateTime(TestCase):
             ),
         ]
         for date_string, date_format, msg in tests:
-            with self.subTest(
-                date_string=date_string, date_format=date_format, msg=msg
-            ):
+            with self.subTest(date_string=date_string, date_format=date_format, msg=msg):
                 with self.assertRaises(ValueError, msg=msg):
                     jdatetime.datetime.strptime(date_string, date_format)
 
@@ -530,9 +509,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(jdt.locale, 'nl_NL')
 
     def test_fromgregorian_accepts_year_month_day_and_locale(self):
-        jdt = jdatetime.datetime.fromgregorian(
-            year=2018, month=7, day=15, locale='nl_NL'
-        )
+        jdt = jdatetime.datetime.fromgregorian(year=2018, month=7, day=15, locale='nl_NL')
         self.assertEqual(jdt.year, 1397)
         self.assertEqual(jdt.month, 4)
         self.assertEqual(jdt.day, 24)
@@ -674,9 +651,7 @@ class TestJDateTime(TestCase):
             self.assertEqual(str(date), '1394-01-01 00:00:00+0326')
 
     def test_as_locale_returns_same_datetime_with_specified_locale(self):
-        jdt_en = jdatetime.datetime(
-            1397, 4, 23, 11, 47, 30, 40, locale='en_US'
-        )
+        jdt_en = jdatetime.datetime(1397, 4, 23, 11, 47, 30, 40, locale='en_US')
         jdt_fa = jdt_en.aslocale('fa_IR')
         self.assertEqual(jdt_fa.year, 1397)
         self.assertEqual(jdt_fa.month, 4)
@@ -986,13 +961,9 @@ class TestJdatetimeGetSetLocale(TestCase):
     def test_set_locale_is_per_thread_with_no_effect_on_other_threads(self):
         event = threading.Event()
         fa_record = []
-        fa_thread = threading.Thread(
-            target=self.record_thread_locale, args=(fa_record, event, 'fa_IR')
-        )
+        fa_thread = threading.Thread(target=self.record_thread_locale, args=(fa_record, event, 'fa_IR'))
         nl_record = []
-        nl_thread = threading.Thread(
-            target=self.record_thread_locale, args=(nl_record, event, 'nl_NL')
-        )
+        nl_thread = threading.Thread(target=self.record_thread_locale, args=(nl_record, event, 'nl_NL'))
 
         fa_thread.start()
         nl_thread.start()
@@ -1004,9 +975,7 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual('fa_IR', fa_record[0])
         self.assertEqual(1, len(nl_record))
         self.assertEqual('nl_NL', nl_record[0])
-        self.assertIsNone(
-            jdatetime.get_locale()
-        )  # MainThread is not affected neither
+        self.assertIsNone(jdatetime.get_locale())  # MainThread is not affected neither
 
     @skipUnless(
         greenlet_installed,

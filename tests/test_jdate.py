@@ -60,9 +60,7 @@ class TestJDate(TestCase):
         self.assertEqual(j_today.locale, 'nl_NL')
 
     def test_fromgregorian_accepts_locale_keyword_arg_when_int_passed(self):
-        j_today = jdatetime.date.fromgregorian(
-            day=15, month=7, year=2018, locale='nl_NL'
-        )
+        j_today = jdatetime.date.fromgregorian(day=15, month=7, year=2018, locale='nl_NL')
         self.assertEqual(j_today.locale, 'nl_NL')
 
     def test_togregorian_leap(self):
@@ -156,9 +154,7 @@ class TestJDate(TestCase):
         dmax = jdatetime.date.max
         self.assertTrue(isinstance(dmax, jdatetime.date))
         self.assertEqual(dmax.year, jdatetime.MAXYEAR)
-        self.assertRaises(
-            ValueError, jdatetime.date, jdatetime.MAXYEAR + 1, 1, 1
-        )
+        self.assertRaises(ValueError, jdatetime.date, jdatetime.MAXYEAR + 1, 1, 1)
         with self.assertRaises(
             ValueError,
             msg='Should raise an exception when we go over date.max',
@@ -169,9 +165,7 @@ class TestJDate(TestCase):
         dmin = jdatetime.date.min
         self.assertTrue(isinstance(dmin, jdatetime.date))
         self.assertEqual(dmin.year, jdatetime.MINYEAR)
-        self.assertRaises(
-            ValueError, jdatetime.date, jdatetime.MINYEAR - 1, 1, 1
-        )
+        self.assertRaises(ValueError, jdatetime.date, jdatetime.MINYEAR - 1, 1, 1)
         with self.assertRaises(
             ValueError,
             msg='Should raise an exception when we ge below date.min',
@@ -197,12 +191,8 @@ class TestJDate(TestCase):
             jdatetime.date(1402, 2, 31),
         )
 
-        with self.assertRaises(
-            ValueError, msg="Invalid isoformat string: 'some-invalid-format'"
-        ):
+        with self.assertRaises(ValueError, msg="Invalid isoformat string: 'some-invalid-format'"):
             jdatetime.date.fromisoformat('some-invalid-format')
 
-        with self.assertRaises(
-            TypeError, msg='fromisoformat: argument must be str'
-        ):
+        with self.assertRaises(TypeError, msg='fromisoformat: argument must be str'):
             jdatetime.date.fromisoformat(1)

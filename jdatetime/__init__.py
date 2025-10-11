@@ -266,11 +266,7 @@ class date:
 
     def __init__(self, year, month, day, **kwargs):
         """date(year, month, day) --> date object"""
-        if not (
-            self._check_arg(year)
-            and self._check_arg(month)
-            and self._check_arg(day)
-        ):
+        if not (self._check_arg(year) and self._check_arg(month) and self._check_arg(day)):
             raise TypeError('an integer is required' + repr(type(year)))
         if year < MINYEAR or year > MAXYEAR:
             raise ValueError('year is out of range')
@@ -290,9 +286,7 @@ class date:
         elif day > j_days_in_month[self.__month - 1]:
             raise ValueError('day is out of range for month')
         self.__day = day
-        self.__locale = (
-            kwargs['locale'] if (kwargs.get('locale')) else get_locale()
-        )
+        self.__locale = kwargs['locale'] if (kwargs.get('locale')) else get_locale()
 
         if self._is_fa_locale():
             self.j_months = self.j_months_fa
@@ -329,9 +323,7 @@ class date:
 
     def togregorian(self):
         """Convert current jalali date to gregorian and return datetime.date"""
-        (y, m, d) = JalaliToGregorian(
-            self.year, self.month, self.day
-        ).getGregorianList()
+        (y, m, d) = JalaliToGregorian(self.year, self.month, self.day).getGregorianList()
         return py_datetime.date(y, m, d)
 
     @staticmethod
@@ -346,9 +338,7 @@ class date:
         if 'date' in kw:
             d = kw['date']
             try:
-                (y, m, d) = GregorianToJalali(
-                    d.year, d.month, d.day
-                ).getJalaliList()
+                (y, m, d) = GregorianToJalali(d.year, d.month, d.day).getJalaliList()
                 return date(y, m, d, locale=locale)
             except AttributeError:
                 raise ValueError(
@@ -369,9 +359,7 @@ class date:
     def today():
         """Current date or datetime:  same as self.__class__.fromtimestamp(time.time())."""
         to = py_datetime.date.today()
-        (y, m, d) = GregorianToJalali(
-            to.year, to.month, to.day
-        ).getJalaliList()
+        (y, m, d) = GregorianToJalali(to.year, to.month, to.day).getJalaliList()
         return date(y, m, d)
 
     @staticmethod
@@ -416,9 +404,7 @@ class date:
 
     @staticmethod
     def j_month_short_to_num(month_name):
-        return (
-            date.j_months_short_en.index(month_name.lower().capitalize()) + 1
-        )
+        return date.j_months_short_en.index(month_name.lower().capitalize()) + 1
 
     @staticmethod
     def j_month_fa_to_num(month_name):
@@ -433,18 +419,14 @@ class date:
     def __add__(self, timedelta):
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
-            return date.fromgregorian(
-                date=self.togregorian() + timedelta, locale=self.locale
-            )
+            return date.fromgregorian(date=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
     def __sub__(self, other):
         """x.__sub__(y) <==> x-y"""
 
         if isinstance(other, py_datetime.timedelta):
-            return date.fromgregorian(
-                date=self.togregorian() - other, locale=self.locale
-            )
+            return date.fromgregorian(date=self.togregorian() - other, locale=self.locale)
         if isinstance(other, py_datetime.date):
             return self.togregorian() - other
         if isinstance(other, date):
@@ -664,9 +646,7 @@ date.max = date(MAXYEAR, 12, 30)
 
 _DIRECTIVE_PATTERNS = {
     '%A': '(?:' + '|'.join([*date.j_weekdays_fa, *date.j_weekdays_en]) + ')',
-    '%a': '(?:'
-    + '|'.join([*date.j_weekdays_fa, *date.j_weekdays_short_en])
-    + ')',
+    '%a': '(?:' + '|'.join([*date.j_weekdays_fa, *date.j_weekdays_short_en]) + ')',
     '%Y': r'(?P<Y>\d{4})',
     '%y': r'(?P<y>\d{2})',
     '%m': r'(?P<m>\d{1,2})',
@@ -674,9 +654,7 @@ _DIRECTIVE_PATTERNS = {
     '%H': r'(?P<H>\d{1,2})',
     '%j': r'[0-3]\d\d',
     '%M': r'(?P<M>\d{1,2})',
-    '%p': '(?:'
-    + '|'.join([*date.j_ampm_fa.values(), *date.j_ampm_en.values()])
-    + ')',
+    '%p': '(?:' + '|'.join([*date.j_ampm_fa.values(), *date.j_ampm_en.values()]) + ')',
     '%S': r'(?P<S>\d{1,2})',
     '%f': r'(?P<f>\d{1,6})',
     '%B': r'(?P<B>[a-zA-Z\u0600-\u06EF\uFB8A\u067E\u0686\u06AF]{2,12})',
@@ -752,9 +730,7 @@ class datetime(date):
         ):
             raise TypeError('an integer is required')
 
-        self.__time = time(
-            tmp_hour, tmp_min, tmp_sec, tmp_micr, tzinfo, fold=fold
-        )
+        self.__time = time(tmp_hour, tmp_min, tmp_sec, tmp_micr, tzinfo, fold=fold)
 
     def __repr__(self):
         if self.__time.tzinfo is not None:
@@ -872,13 +848,9 @@ class datetime(date):
             raise TypeError("Required argument 'time' (pos 2) not found")
 
         if not isinstance(c_date, date):
-            raise TypeError(
-                f'combine() argument 1 must be jdatetime.date, not {type(c_date)}'
-            )
+            raise TypeError(f'combine() argument 1 must be jdatetime.date, not {type(c_date)}')
         if not isinstance(c_time, time):
-            raise TypeError(
-                f'combine() argument 2 must be jdatetime.time, not {type(c_time)}'
-            )
+            raise TypeError(f'combine() argument 2 must be jdatetime.time, not {type(c_time)}')
 
         return datetime(
             c_date.year,
@@ -938,9 +910,7 @@ class datetime(date):
 
         match = re.fullmatch(regex, date_string)
         if match is None:
-            raise ValueError(
-                f"time data '{date_string}' does not match format '{format}'"
-            )
+            raise ValueError(f"time data '{date_string}' does not match format '{format}'")
 
         get = match.groupdict().get
 
@@ -957,9 +927,7 @@ class datetime(date):
                 else:
                     month = date.j_month_fa_to_num(month_name=month)
             except ValueError:
-                raise ValueError(
-                    f"time data '{date_string}' does not match format '{format}'"
-                )
+                raise ValueError(f"time data '{date_string}' does not match format '{format}'")
 
         timezone_string = get('z', None)
         timezone = datetime._timezone_from_string(timezone_string)
@@ -1039,18 +1007,14 @@ class datetime(date):
     def __add__(self, timedelta):
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
-            return datetime.fromgregorian(
-                datetime=self.togregorian() + timedelta, locale=self.locale
-            )
+            return datetime.fromgregorian(datetime=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
     def __sub__(self, other):
         """x.__sub__(y) <==> x-y"""
 
         if isinstance(other, py_datetime.timedelta):
-            return datetime.fromgregorian(
-                datetime=self.togregorian() - other, locale=self.locale
-            )
+            return datetime.fromgregorian(datetime=self.togregorian() - other, locale=self.locale)
         if isinstance(other, py_datetime.datetime):
             return self.togregorian() - other
         if isinstance(other, datetime):
@@ -1076,11 +1040,7 @@ class datetime(date):
         if other_datetime is None:
             return False
 
-        other_locale = (
-            other_datetime.locale
-            if isinstance(other_datetime, datetime)
-            else get_locale()
-        )
+        other_locale = other_datetime.locale if isinstance(other_datetime, datetime) else get_locale()
         if self.locale != other_locale:
             return False
 
@@ -1235,16 +1195,12 @@ class datetime(date):
         """[sep] -> string in ISO 8601 format,
         YYYY-MM-DDTHH:MM:SS[.mmmmmm][+HH:MM]."""
 
-        assert isinstance(sep, str) and len(sep) == 1, (
-            f'argument 1 must be a single character: {sep}'
-        )
+        assert isinstance(sep, str) and len(sep) == 1, f'argument 1 must be a single character: {sep}'
 
         tz = self.strftime('%z')
 
         date_ = self.strftime('%Y-%m-%d')
-        time_ = _format_time(
-            self.hour, self.minute, self.second, self.microsecond, timespec
-        )
+        time_ = _format_time(self.hour, self.minute, self.second, self.microsecond, timespec)
 
         return f'{date_}{sep}{time_}{tz}'
 
@@ -1321,9 +1277,7 @@ class datetime(date):
         if z.startswith('-'):
             gmtoff = -gmtoff
             gmtoff_fraction = -gmtoff_fraction
-        timezone = py_datetime.timezone(
-            timedelta(seconds=gmtoff, microseconds=gmtoff_fraction)
-        )
+        timezone = py_datetime.timezone(timedelta(seconds=gmtoff, microseconds=gmtoff_fraction))
         return timezone
 
     def _strftime_p(self):
@@ -1338,9 +1292,7 @@ class datetime(date):
         sign = '+'
         diff_sec = diff.seconds
         if diff.days > 0 or diff.days < -1:
-            raise ValueError(
-                'tzinfo.utcoffset() returned big time delta! ; must be in -1439 .. 1439'
-            )
+            raise ValueError('tzinfo.utcoffset() returned big time delta! ; must be in -1439 .. 1439')
         if diff.days != 0:
             sign = '-'
             diff_sec = (1 * 24 * 60 * 60) - diff_sec
