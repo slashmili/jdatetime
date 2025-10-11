@@ -29,7 +29,6 @@ jobs:
       - name: Tox tests
         run: |
           tox -v
-
   ruff:
     runs-on: ubuntu-latest
     name: ruff
@@ -40,10 +39,11 @@ jobs:
         with:
           python-version: "3.9"
           architecture: x64
-      - name: Install dependencies
+      - name: Install Ruff
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --upgrade tox tox-gh-actions
-      - name: Run ruff
+          pip install ruff
+
+      - name: Run ruff check
         run: |
-          tox -e ruff
+          ruff check
