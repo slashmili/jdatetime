@@ -29,23 +29,6 @@ jobs:
       - name: Tox tests
         run: |
           tox -v
-  flake8:
-    runs-on: ubuntu-latest
-    name: flake8
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
-          architecture: x64
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade tox tox-gh-actions
-      - name: Run flake8
-        run: |
-          tox -e flake8
 
   ruff:
     runs-on: ubuntu-latest
