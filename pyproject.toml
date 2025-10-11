@@ -1,0 +1,26 @@
+[project]
+name = "jdatetime"
+version = "0.1.0"
+description = "Jalali datetime binding for python"
+readme = "README.rst"
+requires-python = ">=3.9"
+dependencies = [
+    "jalali-core>=1.0.0",
+]
+
+
+[tool.ruff]
+line-length = 79
+format.quote-style = 'single'
+lint.isort.combine-as-imports = true
+lint.extend-select = [
+    'W605', # invalid-escape-sequence
+    'FA',   # flake8-future-annotations
+    'I',    # isort
+    'UP',   # pyupgrade
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+]

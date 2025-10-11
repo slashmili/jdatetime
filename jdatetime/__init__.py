@@ -1344,8 +1344,8 @@ class datetime(date):
         if diff.days != 0:
             sign = '-'
             diff_sec = (1 * 24 * 60 * 60) - diff_sec
-        tmp_min = diff_sec / 60
-        diff_hour = tmp_min / 60
+        tmp_min = diff_sec // 60
+        diff_hour = tmp_min // 60
         diff_min = tmp_min % 60
         return f'{sign}{diff_hour:02d}{diff_min:02d}'
 
