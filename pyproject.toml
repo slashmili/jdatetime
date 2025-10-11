@@ -45,6 +45,7 @@ line-length = 110
 format.quote-style = 'single'
 lint.isort.combine-as-imports = true
 lint.extend-select = [
+    'E501', # line-too-long
     'W605', # invalid-escape-sequence
     'FA',   # flake8-future-annotations
     'I',    # isort

@@ -391,17 +391,11 @@ class TestJDateTime(TestCase):
                 self.assertEqual(jdatetime.datetime(*expected_date), date)
 
     def test_strptime_invalid_date_string_b_directive(self):
-        with self.assertRaises(
-            ValueError,
-            msg="time data '14 DRO 1400' does not match format '%d %b %Y'",
-        ):
+        with self.assertRaises(ValueError, msg="time data '14 DRO 1400' does not match format '%d %b %Y'"):
             jdatetime.datetime.strptime('14 DRO 1400', '%d %b %Y')
 
     def test_strptime_invalid_date_string_B_directive(self):
-        with self.assertRaises(
-            ValueError,
-            msg="time data '14 ordi 1400' does not match format '%d %B %Y'",
-        ):
+        with self.assertRaises(ValueError, msg="time data '14 ordi 1400' does not match format '%d %B %Y'"):
             jdatetime.datetime.strptime('14 ordi 1400', '%d %B %Y')
 
     def test_strptime_handle_z_directive(self):
@@ -411,23 +405,11 @@ class TestJDateTime(TestCase):
             ('+۰۱۲۳', '%z', datetime.timedelta(seconds=4980)),
             ('-۰۱۲3', '%z', datetime.timedelta(seconds=-4980)),
             ('+012345', '%z', datetime.timedelta(seconds=5025)),
-            (
-                '+012345.012345',
-                '%z',
-                datetime.timedelta(seconds=5025, microseconds=12345),
-            ),
-            (
-                '-012345.012345',
-                '%z',
-                datetime.timedelta(seconds=-5025, microseconds=-12345),
-            ),
+            ('+012345.012345', '%z', datetime.timedelta(seconds=5025, microseconds=12345)),
+            ('-012345.012345', '%z', datetime.timedelta(seconds=-5025, microseconds=-12345)),
             ('+01:23', '%z', datetime.timedelta(seconds=4980)),
             ('+01:23:45', '%z', datetime.timedelta(seconds=5025)),
-            (
-                '+01:23:45.123',
-                '%z',
-                datetime.timedelta(seconds=5025, microseconds=123000),
-            ),
+            ('+01:23:45.123', '%z', datetime.timedelta(seconds=5025, microseconds=123000)),
         ]
         for date_string, date_format, time_delta in tests:
             with self.subTest(date_string=date_string, date_format=date_format):
@@ -441,11 +423,7 @@ class TestJDateTime(TestCase):
             ('+012', '%z', "time data '+012' does not match format '%z'"),
             ('+01:2356', '%z', 'Inconsistent use of : in -01:2356'),
             ('+0123:56', '%z', "invalid literal for int() with base 10: ':5'"),
-            (
-                '+012345123456',
-                '%z',
-                "time data '+012345123456' does not match format '%z'",
-            ),
+            ('+012345123456', '%z', "time data '+012345123456' does not match format '%z'"),
         ]
         for date_string, date_format, msg in tests:
             with self.subTest(date_string=date_string, date_format=date_format, msg=msg):
@@ -771,11 +749,7 @@ class TestJdatetimeComparison(TestCase):
 
         dt_gmt = datetime.datetime(2015, 6, 27, 0, 0, 0, tzinfo=gmt)
         dt_teh = datetime.datetime(2015, 6, 27, 3, 30, 0, tzinfo=teh)
-        self.assertEqual(
-            dt_teh,
-            dt_gmt,
-            'In standrd python datetime, __eq__ considers timezone',
-        )
+        self.assertEqual(dt_teh, dt_gmt, 'In standrd python datetime, __eq__ considers timezone')
 
         jdt_gmt = jdatetime.datetime(1389, 2, 17, 0, 0, 0, tzinfo=gmt)
         jdt_teh = jdatetime.datetime(1389, 2, 17, 3, 30, 0, tzinfo=teh)
@@ -954,10 +928,7 @@ class TestJdatetimeGetSetLocale(TestCase):
     def test_get_locale_returns_none_if_no_locale_set_yet(self):
         self.assertIsNone(jdatetime.get_locale())
 
-    @skipIf(
-        greenlet_installed,
-        'thread ident is used when greenlet is not installed',
-    )
+    @skipIf(greenlet_installed, 'thread ident is used when greenlet is not installed')
     def test_set_locale_is_per_thread_with_no_effect_on_other_threads(self):
         event = threading.Event()
         fa_record = []
@@ -977,13 +948,8 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual('nl_NL', nl_record[0])
         self.assertIsNone(jdatetime.get_locale())  # MainThread is not affected neither
 
-    @skipUnless(
-        greenlet_installed,
-        'greenelts ident is used when greenlet module is installed',
-    )
-    def test_set_locale_is_per_greenlet_with_no_effect_on_other_greenlets(
-        self,
-    ):
+    @skipUnless(greenlet_installed, 'greenelts ident is used when greenlet module is installed')
+    def test_set_locale_is_per_greenlet_with_no_effect_on_other_greenlets(self):
         fa_record = []
 
         def record_greenlet_locale_fa():
@@ -1009,10 +975,7 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual(1, len(nl_record))
         self.assertEqual('nl_NL', nl_record[0])
 
-    @skipIf(
-        greenlet_installed,
-        'thread ident is used when greenlet is not installed',
-    )
+    @skipIf(greenlet_installed, 'thread ident is used when greenlet is not installed')
     def test_set_locale_sets_default_locale_for_date_objects(self):
         def record_locale_formatted_date(record, locale):
             jdatetime.set_locale(locale)
@@ -1021,22 +984,14 @@ class TestJdatetimeGetSetLocale(TestCase):
             record.append(dt.strftime('%B'))
 
         fa_record = []
-        fa_th = threading.Thread(
-            target=record_locale_formatted_date,
-            args=(fa_record, jdatetime.FA_LOCALE),
-        )
+        fa_th = threading.Thread(target=record_locale_formatted_date, args=(fa_record, jdatetime.FA_LOCALE))
         fa_th.start()
         fa_th.join()
 
         self.assertEqual(['یک‌شنبه', 'خرداد'], fa_record)
 
-    @skipUnless(
-        greenlet_installed,
-        'greenlets ident is used when greenlet module is installed',
-    )
-    def test_set_locale_sets_default_locale_for_date_objects_with_greenlets(
-        self,
-    ):
+    @skipUnless(greenlet_installed, 'greenlets ident is used when greenlet module is installed')
+    def test_set_locale_sets_default_locale_for_date_objects_with_greenlets(self):
         def record_locale_formatted_date(record, locale):
             jdatetime.set_locale(locale)
             dt = jdatetime.date(1397, 3, 27)
@@ -1070,14 +1025,7 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual(
             jdatetime.datetime.fromisoformat('1400-11-04T00:05:23+04:00'),
             jdatetime.datetime(
-                1400,
-                11,
-                4,
-                0,
-                5,
-                23,
-                0,
-                tzinfo=datetime.timezone(datetime.timedelta(seconds=14400)),
+                1400, 11, 4, 0, 5, 23, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=14400))
             ),
         )
 

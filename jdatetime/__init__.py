@@ -23,15 +23,9 @@ MAXYEAR = 9377
 STRFTIME_MAPPING = {
     # A mapping between symbol to it's helper function and function kwargs
     # symbol: (helper_function_name, {kwargs})
-    '%a': (
-        '_strftime_get_method_value',
-        {'attr': 'jweekday_short', 'fmt': '%s'},
-    ),
+    '%a': ('_strftime_get_method_value', {'attr': 'jweekday_short', 'fmt': '%s'}),
     '%A': ('_strftime_get_method_value', {'attr': 'jweekday', 'fmt': '%s'}),
-    '%b': (
-        '_strftime_get_method_value',
-        {'attr': 'jmonth_short', 'fmt': '%s'},
-    ),
+    '%b': ('_strftime_get_method_value', {'attr': 'jmonth_short', 'fmt': '%s'}),
     '%B': ('_strftime_get_method_value', {'attr': 'jmonth', 'fmt': '%s'}),
     '%c': ('_strftime_c', {}),
     '%d': ('_strftime_get_attr_value', {'attr': 'day', 'fmt': '%02.d'}),
@@ -43,42 +37,15 @@ STRFTIME_MAPPING = {
     '%W': ('_strftime_get_method_value', {'attr': 'weeknumber', 'fmt': '%d'}),
     '%Y': ('_strftime_get_attr_value', {'attr': 'year', 'fmt': '%d'}),
     '%y': ('_strftime_get_attr_value', {'attr': 'cyear', 'fmt': '%02.d'}),
-    '%f': (
-        '_strftime_get_attr_value',
-        {'attr': 'microsecond', 'fmt': '%06.d', 'fb': '000000'},
-    ),
-    '%H': (
-        '_strftime_get_attr_value',
-        {'attr': 'hour', 'fmt': '%02.d', 'fb': '00'},
-    ),
-    '%-H': (
-        '_strftime_get_attr_value',
-        {'attr': 'hour', 'fmt': '%d', 'fb': '0'},
-    ),
-    '%I': (
-        '_strftime_get_attr_value',
-        {'attr': 'hour', 'fmt': '%02.d', 'fb': '12'},
-    ),
-    '%-I': (
-        '_strftime_get_attr_value',
-        {'attr': 'hour', 'fmt': '%d', 'fb': '12'},
-    ),
-    '%M': (
-        '_strftime_get_attr_value',
-        {'attr': 'minute', 'fmt': '%02.d', 'fb': '00'},
-    ),
-    '%-M': (
-        '_strftime_get_attr_value',
-        {'attr': 'minute', 'fmt': '%d', 'fb': '0'},
-    ),
-    '%S': (
-        '_strftime_get_attr_value',
-        {'attr': 'second', 'fmt': '%02.d', 'fb': '00'},
-    ),
-    '%-S': (
-        '_strftime_get_attr_value',
-        {'attr': 'second', 'fmt': '%d', 'fb': '0'},
-    ),
+    '%f': ('_strftime_get_attr_value', {'attr': 'microsecond', 'fmt': '%06.d', 'fb': '000000'}),
+    '%H': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%02.d', 'fb': '00'}),
+    '%-H': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%d', 'fb': '0'}),
+    '%I': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%02.d', 'fb': '12'}),
+    '%-I': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%d', 'fb': '12'}),
+    '%M': ('_strftime_get_attr_value', {'attr': 'minute', 'fmt': '%02.d', 'fb': '00'}),
+    '%-M': ('_strftime_get_attr_value', {'attr': 'minute', 'fmt': '%d', 'fb': '0'}),
+    '%S': ('_strftime_get_attr_value', {'attr': 'second', 'fmt': '%02.d', 'fb': '00'}),
+    '%-S': ('_strftime_get_attr_value', {'attr': 'second', 'fmt': '%d', 'fb': '0'}),
     '%p': ('_strftime_p', {}),
     '%x': ('_strftime_x', {}),
     '%X': ('_strftime_cap_x', {}),
@@ -678,13 +645,7 @@ class datetime(date):
 
     def time(self):
         """Return time object with same time but with tzinfo=None."""
-        return time(
-            self.hour,
-            self.minute,
-            self.second,
-            self.microsecond,
-            fold=self.fold,
-        )
+        return time(self.hour, self.minute, self.second, self.microsecond, fold=self.fold)
 
     def date(self):
         """Return date object with same year, month and day."""
@@ -1151,17 +1112,7 @@ class datetime(date):
                             microsecond = kw['microsecond']
                             if 'tzinfo' in kw:
                                 tzinfo = kw['tzinfo']
-            return datetime(
-                y,
-                m,
-                d,
-                hour,
-                minute,
-                second,
-                microsecond,
-                tzinfo,
-                locale=locale,
-            )
+            return datetime(y, m, d, hour, minute, second, microsecond, tzinfo, locale=locale)
 
         raise ValueError(
             'fromgregorian have to called fromgregorian'
