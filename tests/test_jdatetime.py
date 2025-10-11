@@ -1081,7 +1081,7 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual(['یک‌شنبه', 'خرداد'], fa_record)
 
     def test_fromisoformat(self):
-        UTC = datetime.UTC
+        UTC = datetime.timezone.utc
 
         self.assertEqual(
             jdatetime.datetime.fromisoformat('1402-01-03T15:35:59.898169'),
