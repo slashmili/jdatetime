@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "jdatetime"
 description = "Jalali datetime binding for python"
@@ -5,8 +9,33 @@ readme = "README.rst"
 dynamic = ["version"]
 requires-python = ">=3.9"
 dependencies = [
-    "jalali-core>=1.0.0",
+    "jalali-core>=1.0",
 ]
+authors = [
+    {name = "Milad Rastian", email = "eslashmili@gmail.com"},
+]
+license = {text = "Python Software Foundation License"}
+keywords = ["Jalali implementation of Python datetime"]
+urls = {Homepage = "https://github.com/slashmili/python-jalali"}
+
+# Classifiers
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development",
+]
+
+[tool.setuptools]
+packages = ["jdatetime"] 
+platforms = ["any"]
 
 [tool.setuptools.dynamic]
 version = {attr = "jdatetime.__VERSION__"}
