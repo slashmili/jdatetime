@@ -18,7 +18,6 @@ license = {text = "Python Software Foundation License"}
 keywords = ["Jalali implementation of Python datetime"]
 urls = {Homepage = "https://github.com/slashmili/python-jalali"}
 
-# Classifiers
 classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
