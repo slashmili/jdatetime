@@ -137,7 +137,7 @@ If you wish to limit the testing to specific Python version, you can parametrize
 
 Release Steps
 ~~~~~~~~~~~~~~
-* Bump the version in ``setup.py`` and ``jdatetime/__init__.py``. We are using Semantic Versioning.
+* Bump the ``__VERSION__`` in ``jdatetime/__init__.py``. We are using Semantic Versioning.
 * Add release notes in CHANGELOG.md
 * Commit and push the changes. Create a PR
 * After the PR is merged, create a release with a tag name like `v<version>`

@@ -107,7 +107,7 @@ class TestJDate(TestCase):
         )
         with self.assertRaisesRegex(
             TypeError,
-            r"unsupported operand type\(s\) for \+=: 'date' and 'object'"
+            r"unsupported operand type\(s\) for \+=: 'date' and 'object'",
         ):
             date += unknown_type
 
@@ -133,7 +133,7 @@ class TestJDate(TestCase):
         self.assertEqual(delta.days, 1)
 
     def test_timetuple(self):
-        date = jdatetime.date(1397, 4, 22,)
+        date = jdatetime.date(1397, 4, 22)
         self.assertEqual(
             date.timetuple(),
             time.struct_time((2018, 7, 13, 0, 0, 0, 4, 194, -1)),
@@ -149,7 +149,7 @@ class TestJDate(TestCase):
         self.assertTrue(isinstance(dmax, jdatetime.date))
         self.assertEqual(dmax.year, jdatetime.MAXYEAR)
         self.assertRaises(ValueError, jdatetime.date, jdatetime.MAXYEAR + 1, 1, 1)
-        with self.assertRaises(ValueError, msg="Should raise an exception when we go over date.max"):
+        with self.assertRaises(ValueError, msg='Should raise an exception when we go over date.max'):
             _ = dmax + jdatetime.date.resolution
 
     def test_min_year(self):
@@ -157,7 +157,7 @@ class TestJDate(TestCase):
         self.assertTrue(isinstance(dmin, jdatetime.date))
         self.assertEqual(dmin.year, jdatetime.MINYEAR)
         self.assertRaises(ValueError, jdatetime.date, jdatetime.MINYEAR - 1, 1, 1)
-        with self.assertRaises(ValueError, msg="Should raise an exception when we ge below date.min"):
+        with self.assertRaises(ValueError, msg='Should raise an exception when we ge below date.min'):
             _ = dmin - jdatetime.date.resolution
 
     def test_pickle(self):
@@ -170,7 +170,7 @@ class TestJDate(TestCase):
 
     def test_fromisoformat(self):
         self.assertEqual(
-            jdatetime.date.fromisoformat("1378-02-22"),
+            jdatetime.date.fromisoformat('1378-02-22'),
             jdatetime.date(day=22, month=2, year=1378),
         )
 
@@ -180,7 +180,7 @@ class TestJDate(TestCase):
         )
 
         with self.assertRaises(ValueError, msg="Invalid isoformat string: 'some-invalid-format'"):
-            jdatetime.date.fromisoformat("some-invalid-format")
+            jdatetime.date.fromisoformat('some-invalid-format')
 
-        with self.assertRaises(TypeError, msg="fromisoformat: argument must be str"):
+        with self.assertRaises(TypeError, msg='fromisoformat: argument must be str'):
             jdatetime.date.fromisoformat(1)

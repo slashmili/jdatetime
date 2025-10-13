@@ -25,7 +25,7 @@ class GMTTime(jdatetime.tzinfo):
         return jdatetime.timedelta(hours=0)
 
     def tzname(self, dt):
-        return "GMT"
+        return 'GMT'
 
     def dst(self, dt):
         return jdatetime.timedelta(0)
@@ -36,7 +36,7 @@ class TehranTime(jdatetime.tzinfo):
         return jdatetime.timedelta(hours=3, minutes=30)
 
     def tzname(self, dt):
-        return "IRDT"
+        return 'IRDT'
 
     def dst(self, dt):
         return jdatetime.timedelta(0)
@@ -79,10 +79,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(dt.time().fold, 1)
 
         # Test invalid value for fold
-        with self.assertRaises(
-            ValueError,
-            msg='fold must be either 0 or 1'
-        ):
+        with self.assertRaises(ValueError, msg='fold must be either 0 or 1'):
             jdatetime.datetime(1400, 11, 22, fold=2)
 
         # Test combine
@@ -168,7 +165,7 @@ class TestJDateTime(TestCase):
         )
         self.assertEqual(
             True,
-            jd_datetime == jdatetime.datetime.combine(d_check_with, jdatetime.time(14, 15, 16))
+            jd_datetime == jdatetime.datetime.combine(d_check_with, jdatetime.time(14, 15, 16)),
         )
 
         gdatetime = datetime.datetime(2011, 5, 13, 14, 15, 16)
@@ -176,7 +173,7 @@ class TestJDateTime(TestCase):
 
     def test_strftime(self):
         s = jdatetime.date(1390, 2, 23)
-        string_format = "%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f %z %Z"
+        string_format = '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f %z %Z'
         output = (
             'Fri Friday Ord Ordibehesht Fri Ord 23 00:00:00 '
             '1390 23 00 12 054 02 00 AM 00 6 8 02/23/90 00:00:00 90 1390 000000  '
@@ -184,7 +181,7 @@ class TestJDateTime(TestCase):
         self.assertEqual(s.strftime(string_format), output)
 
         dt = jdatetime.datetime(1390, 2, 23, 12, 13, 14, 1)
-        unicode_format = "%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f"
+        unicode_format = '%a %A %b %B %c %d %H %I %j %m %M %p %S %w %W %x %X %y %Y %f'
         output = (
             'Fri Friday Ord Ordibehesht Fri Ord 23 12:13:14 '
             '1390 23 12 12 054 02 13 PM 14 6 8 02/23/90 12:13:14 90 1390 000001'
@@ -192,8 +189,8 @@ class TestJDateTime(TestCase):
         self.assertEqual(dt.strftime(unicode_format), output)
 
         dt = jdatetime.datetime(1390, 2, 23, 12, 13, 14, 1)
-        string_format = "ﺱﺎﻟ = %y، ﻡﺎﻫ = %m، ﺭﻭﺯ = %d"
-        output = "ﺱﺎﻟ = 90، ﻡﺎﻫ = 02، ﺭﻭﺯ = 23"
+        string_format = 'ﺱﺎﻟ = %y، ﻡﺎﻫ = %m، ﺭﻭﺯ = %d'
+        output = 'ﺱﺎﻟ = 90، ﻡﺎﻫ = 02، ﺭﻭﺯ = 23'
         self.assertEqual(dt.strftime(string_format), output)
 
         class NYCTime(jdatetime.tzinfo):
@@ -201,38 +198,38 @@ class TestJDateTime(TestCase):
                 return jdatetime.timedelta(hours=-4)
 
             def tzname(self, dt):
-                return "EDT"
+                return 'EDT'
 
             def dst(self, dt):
                 return jdatetime.timedelta(0)
 
         nyc = NYCTime()
         dt = jdatetime.datetime(1389, 2, 17, 19, 10, 2, tzinfo=nyc)
-        self.assertEqual(dt.strftime("%Z %z"), "EDT -0400")
+        self.assertEqual(dt.strftime('%Z %z'), 'EDT -0400')
 
         teh = TehranTime()
         dt = jdatetime.datetime(1389, 2, 17, 19, 10, 2, tzinfo=teh)
-        self.assertEqual(dt.strftime("%Z %z"), "IRDT +0330")
+        self.assertEqual(dt.strftime('%Z %z'), 'IRDT +0330')
 
     def test_strftime_unicode(self):
         s = jdatetime.date(1390, 2, 23)
-        self.assertEqual(s.strftime(b"%a %A"), "Fri Friday")
+        self.assertEqual(s.strftime(b'%a %A'), 'Fri Friday')
 
     def test_strftime_single_digit(self):
         dt = jdatetime.datetime(1390, 2, 3, 4, 5, 6)
         self.assertEqual(
-            dt.strftime("%-m %m %-d %d %-H %H %-M %M %-S %S"),
-            "2 02 3 03 4 04 5 05 6 06",
+            dt.strftime('%-m %m %-d %d %-H %H %-M %M %-S %S'),
+            '2 02 3 03 4 04 5 05 6 06',
         )
 
     def test_strftime_escape_percent(self):
         dt = jdatetime.datetime(1402, 1, 7)
-        self.assertEqual(dt.strftime("%%x=%x"), "%x=01/07/02")
-        self.assertEqual(dt.strftime("%%d=%d"), "%d=07")
-        self.assertEqual(dt.strftime("%%%d"), "%07")
+        self.assertEqual(dt.strftime('%%x=%x'), '%x=01/07/02')
+        self.assertEqual(dt.strftime('%%d=%d'), '%d=07')
+        self.assertEqual(dt.strftime('%%%d'), '%07')
 
     def test_strftime_unknown_directive(self):
-        self.assertEqual(jdatetime.date.today().strftime("%Q"), "%Q")
+        self.assertEqual(jdatetime.date.today().strftime('%Q'), '%Q')
 
     def test_kabiseh(self):
         kabiseh_year = jdatetime.date.fromgregorian(date=datetime.date(2013, 3, 20))
@@ -307,32 +304,32 @@ class TestJDateTime(TestCase):
         self.assertEqual(dt_naive.tzinfo, None)
 
     def test_strptime(self):
-        date_string = "1363-6-6 12:13:14"
-        date_format = "%Y-%m-%d %H:%M:%S"
+        date_string = '1363-6-6 12:13:14'
+        date_format = '%Y-%m-%d %H:%M:%S'
         dt1 = jdatetime.datetime.strptime(date_string, date_format)
         dt2 = jdatetime.datetime(1363, 6, 6, 12, 13, 14)
 
         self.assertEqual(dt1, dt2)
 
     def test_strptime_bare(self):
-        date_string = "13630606121314"
-        date_format = "%Y%m%d%H%M%S"
+        date_string = '13630606121314'
+        date_format = '%Y%m%d%H%M%S'
         dt1 = jdatetime.datetime.strptime(date_string, date_format)
         dt2 = jdatetime.datetime(1363, 6, 6, 12, 13, 14)
 
         self.assertTrue(dt1 == dt2)
 
     def test_strptime_handles_alphabets_in_format(self):
-        date_string = "1363-6-6T12:13:14"
-        date_format = "%Y-%m-%dT%H:%M:%S"
+        date_string = '1363-6-6T12:13:14'
+        date_format = '%Y-%m-%dT%H:%M:%S'
         dt1 = jdatetime.datetime.strptime(date_string, date_format)
         dt2 = jdatetime.datetime(1363, 6, 6, 12, 13, 14)
 
         self.assertEqual(dt1, dt2)
 
     def test_strptime_special_chars(self):
-        date_string = "[1363*6*6] ? (12+13+14)"
-        date_format = "[%Y*%m*%d] ? (%H+%M+%S)"
+        date_string = '[1363*6*6] ? (12+13+14)'
+        date_format = '[%Y*%m*%d] ? (%H+%M+%S)'
         dt1 = jdatetime.datetime.strptime(date_string, date_format)
         dt2 = jdatetime.datetime(1363, 6, 6, 12, 13, 14)
 
@@ -341,28 +338,25 @@ class TestJDateTime(TestCase):
     def test_strptime_small_y(self):
         self.assertEqual(
             jdatetime.datetime(1468, 1, 1),
-            jdatetime.datetime.strptime("68/1/1", "%y/%m/%d")
+            jdatetime.datetime.strptime('68/1/1', '%y/%m/%d'),
         )
         self.assertEqual(
             jdatetime.datetime(1369, 1, 1),
-            jdatetime.datetime.strptime("69/1/1", "%y/%m/%d")
+            jdatetime.datetime.strptime('69/1/1', '%y/%m/%d'),
         )
 
     def test_strptime_do_not_match_excessive_characters(self):
-        with self.assertRaises(
-            ValueError,
-            msg='%y should not match the trailing space character'
-        ):
+        with self.assertRaises(ValueError, msg='%y should not match the trailing space character'):
             jdatetime.datetime.strptime('21 ', '%y')
 
     def test_strptime_nanoseconds(self):
         self.assertEqual(
             jdatetime.datetime(1279, 1, 1, 0, 0, 0, 700000),
-            jdatetime.datetime.strptime("7", "%f")
+            jdatetime.datetime.strptime('7', '%f'),
         )
         self.assertEqual(
             jdatetime.datetime(1279, 1, 1, 0, 0, 0, 12300),
-            jdatetime.datetime.strptime("0123", "%f")
+            jdatetime.datetime.strptime('0123', '%f'),
         )
 
     def test_strptime_handle_b_B_directive(self):
@@ -415,7 +409,7 @@ class TestJDateTime(TestCase):
             ('-012345.012345', '%z', datetime.timedelta(seconds=-5025, microseconds=-12345)),
             ('+01:23', '%z', datetime.timedelta(seconds=4980)),
             ('+01:23:45', '%z', datetime.timedelta(seconds=5025)),
-            ('+01:23:45.123', '%z', datetime.timedelta(seconds=5025, microseconds=123000))
+            ('+01:23:45.123', '%z', datetime.timedelta(seconds=5025, microseconds=123000)),
         ]
         for date_string, date_format, time_delta in tests:
             with self.subTest(date_string=date_string, date_format=date_format):
@@ -427,7 +421,7 @@ class TestJDateTime(TestCase):
             ('0123', '%z', "time data '0123' does not match format '%z'"),
             ('-01', '%z', "time data '-01' does not match format '%z'"),
             ('+012', '%z', "time data '+012' does not match format '%z'"),
-            ('+01:2356', '%z', "Inconsistent use of : in -01:2356"),
+            ('+01:2356', '%z', 'Inconsistent use of : in -01:2356'),
             ('+0123:56', '%z', "invalid literal for int() with base 10: ':5'"),
             ('+012345123456', '%z', "time data '+012345123456' does not match format '%z'"),
         ]
@@ -448,7 +442,7 @@ class TestJDateTime(TestCase):
         teh = TehranTime()
 
         dt_gmt = datetime.datetime(2015, 6, 27, 1, 2, 3, tzinfo=teh)
-        self.assertEqual("01:02:03+03:30", dt_gmt.timetz().__str__())
+        self.assertEqual('01:02:03+03:30', dt_gmt.timetz().__str__())
 
     def test_fromgregorian_accepts_named_argument_of_date_and_locale(self):
         gd = datetime.date(2018, 7, 14)
@@ -593,9 +587,9 @@ class TestJDateTime(TestCase):
 
     def test_with_none_locale_set(self):
         self.reset_locale()
-        day_of_week = jdatetime.date(1395, 1, 2).strftime("%a")
+        day_of_week = jdatetime.date(1395, 1, 2).strftime('%a')
 
-        self.assertEqual(day_of_week, "Mon")
+        self.assertEqual(day_of_week, 'Mon')
 
     def reset_locale(self):
         if platform.system() == 'Windows':
@@ -605,19 +599,19 @@ class TestJDateTime(TestCase):
 
     def test_with_fa_locale(self):
         self.set_fa_locale()
-        day_of_week = jdatetime.date(1395, 1, 2).strftime("%a")
+        day_of_week = jdatetime.date(1395, 1, 2).strftime('%a')
 
-        self.assertEqual(day_of_week, "دوشنبه")
+        self.assertEqual(day_of_week, 'دوشنبه')
 
     def set_fa_locale(self):
         if platform.system() == 'Windows':
             locale.setlocale(locale.LC_ALL, 'Persian')
         else:
-            locale.setlocale(locale.LC_ALL, "fa_IR")
+            locale.setlocale(locale.LC_ALL, 'fa_IR')
 
     def test_datetime_to_str(self):
         date = jdatetime.datetime(1394, 1, 1, 0, 0, 0)
-        self.assertEqual(str(date), "1394-01-01 00:00:00")
+        self.assertEqual(str(date), '1394-01-01 00:00:00')
 
     def test_with_pytz(self):
         try:
@@ -628,7 +622,7 @@ class TestJDateTime(TestCase):
         if pytz:
             tehran = timezone('Asia/Tehran')
             date = jdatetime.datetime(1394, 1, 1, 0, 0, 0, tzinfo=tehran)
-            self.assertEqual(str(date), "1394-01-01 00:00:00+0326")
+            self.assertEqual(str(date), '1394-01-01 00:00:00+0326')
 
     def test_as_locale_returns_same_datetime_with_specified_locale(self):
         jdt_en = jdatetime.datetime(1397, 4, 23, 11, 47, 30, 40, locale='en_US')
@@ -727,18 +721,19 @@ class TestJDateTime(TestCase):
 class TestJdatetimeComparison(TestCase):
     # __eq__
     def test_eq_datetime(self):
-        date_string = "1363-6-6 12:13:14"
-        date_format = "%Y-%m-%d %H:%M:%S"
+        date_string = '1363-6-6 12:13:14'
+        date_format = '%Y-%m-%d %H:%M:%S'
 
         dt1 = jdatetime.datetime.strptime(date_string, date_format)
 
-        date_string = "1364-6-6 12:13:14"
+        date_string = '1364-6-6 12:13:14'
         dt2 = jdatetime.datetime.strptime(date_string, date_format)
 
         self.assertNotEqual(dt2, dt1)
 
     def test_eq_datetime_now(self):
         import time
+
         dt1 = jdatetime.datetime.now()
         time.sleep(0.1)
         dt2 = jdatetime.datetime.now()
@@ -750,7 +745,7 @@ class TestJdatetimeComparison(TestCase):
 
         dt_gmt = datetime.datetime(2015, 6, 27, 0, 0, 0, tzinfo=gmt)
         dt_teh = datetime.datetime(2015, 6, 27, 3, 30, 0, tzinfo=teh)
-        self.assertEqual(dt_teh, dt_gmt, "In standrd python datetime, __eq__ considers timezone")
+        self.assertEqual(dt_teh, dt_gmt, 'In standrd python datetime, __eq__ considers timezone')
 
         jdt_gmt = jdatetime.datetime(1389, 2, 17, 0, 0, 0, tzinfo=gmt)
         jdt_teh = jdatetime.datetime(1389, 2, 17, 3, 30, 0, tzinfo=teh)
@@ -768,7 +763,7 @@ class TestJdatetimeComparison(TestCase):
 
     def test_eq_with_not_implemented(self):
         dt1 = jdatetime.datetime(2023, 9, 30, 12, 0, 0, locale='fa_IR')
-        dt2 = "not a datetime object"
+        dt2 = 'not a datetime object'
         self.assertFalse(dt1 == dt2)
 
     # __ne__
@@ -797,7 +792,7 @@ class TestJdatetimeComparison(TestCase):
 
     def test_neq_different_types(self):
         dt1 = jdatetime.datetime(1403, 1, 1, 12, 0, 0)
-        self.assertTrue(dt1 != "1403-01-01 12:00:00")
+        self.assertTrue(dt1 != '1403-01-01 12:00:00')
 
     def test_neq_with_none(self):
         dt1 = jdatetime.datetime(1403, 1, 1, 12, 0, 0)
@@ -834,7 +829,7 @@ class TestJdatetimeComparison(TestCase):
 
     def test_neq_not_implemented(self):
         dt1 = jdatetime.datetime(1403, 1, 1, 12, 0, 0)
-        self.assertEqual(dt1.__ne__("not datetime object"), NotImplemented)
+        self.assertEqual(dt1.__ne__('not datetime object'), NotImplemented)
 
     # __ge__
     def test_ge_with_same_datetime(self):
@@ -1026,8 +1021,7 @@ class TestJdatetimeGetSetLocale(TestCase):
         self.assertEqual(
             jdatetime.datetime.fromisoformat('1400-11-04T00:05:23+04:00'),
             jdatetime.datetime(
-                1400, 11, 4, 0, 5, 23, 0,
-                tzinfo=datetime.timezone(datetime.timedelta(seconds=14400)),
+                1400, 11, 4, 0, 5, 23, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=14400))
             ),
         )
 
@@ -1037,7 +1031,6 @@ class TestJdatetimeGetSetLocale(TestCase):
         )
 
         if sys.version_info[:2] >= (3, 11):  # new Python 3.11 time formats
-
             self.assertEqual(
                 jdatetime.datetime.fromisoformat('1402-02-31T00:05:23Z'),
                 jdatetime.datetime(1402, 2, 31, 0, 5, 23, 0, tzinfo=UTC),
@@ -1066,6 +1059,6 @@ class TestJdatetimeGetSetLocale(TestCase):
         )
         with self.assertRaisesRegex(
             TypeError,
-            r"unsupported operand type\(s\) for \-=: 'datetime' and 'object'"
+            r"unsupported operand type\(s\) for \-=: 'datetime' and 'object'",
         ):
             dt -= unknown_type
