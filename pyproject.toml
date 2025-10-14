@@ -54,4 +54,5 @@ lint.extend-select = [
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
+    "tzdata>=2025.2; sys_platform == 'win32'",
 ]
