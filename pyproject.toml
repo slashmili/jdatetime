@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0.0"]
+requires = ["setuptools>=77.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,7 +14,8 @@ dependencies = [
 authors = [
     {name = "Milad Rastian", email = "eslashmili@gmail.com"},
 ]
-license = {text = "Python Software Foundation License"}
+license = "PSF-2.0"
+license-files = ["LICENSE"]
 keywords = ["Jalali implementation of Python datetime"]
 urls = {Homepage = "https://github.com/slashmili/python-jalali"}
 
