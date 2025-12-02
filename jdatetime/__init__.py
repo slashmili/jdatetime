@@ -383,6 +383,10 @@ class date:
     def __str__(self):
         return self.strftime('%Y-%m-%d')
 
+    def __format__(self, _format):
+        _format = _format or '%Y-%m-%d'
+        return self.strftime(_format)
+
     def __add__(self, timedelta):
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
@@ -547,13 +551,6 @@ class date:
     def isoformat(self):
         """Return a string representing the date in ISO 8601 format, 'YYYY-MM-DD'"""
         return self.strftime('%Y-%m-%d')
-
-    def __format__(self, format):
-        """
-        PEP-3101
-        Make string formating work!
-        """
-        return self.strftime(format)
 
     # strftime helper functions
     def _strftime_get_attr_value(self, attr, fmt, fb=None):
@@ -1200,6 +1197,16 @@ class datetime(date):
             mil = '.' + str(self.microsecond)
         tz = self.strftime('%z')
         return self.strftime('%Y-%m-%d %H:%M:%S') + f'{mil}{tz}'
+
+    def __format__(self, _format):
+        if _format == 's':
+            return str(int(self.timestamp()))
+        if _format == 'f':
+            return str(self.timestamp())
+        if _format:
+            return self.strftime(_format)
+        else:
+            return self.__str__()
 
     def aslocale(self, locale):
         return datetime(
