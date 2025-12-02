@@ -1063,8 +1063,6 @@ class TestJdatetimeGetSetLocale(TestCase):
         ):
             dt -= unknown_type
 
-
-class TestFormat(TestCase):
     def test_date_format(self):
         d = jdatetime.date(1402, 5, 15)
         self.assertEqual(f'{d}', '1402-05-15')
