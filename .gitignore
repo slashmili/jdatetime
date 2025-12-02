@@ -1,6 +1,7 @@
 *.pyc
 build
 *.swp
+venv
 
 .tags
 tags
