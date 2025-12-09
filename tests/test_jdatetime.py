@@ -1062,3 +1062,15 @@ class TestJdatetimeGetSetLocale(TestCase):
             r"unsupported operand type\(s\) for \-=: 'datetime' and 'object'",
         ):
             dt -= unknown_type
+
+    def test_date_format(self):
+        d = jdatetime.date(1402, 5, 15)
+        self.assertEqual(f'{d}', '1402-05-15')
+        self.assertEqual(f'{d:%Y/%m/%d}', '1402/05/15')
+
+    def test_datetime_format(self):
+        dt = jdatetime.datetime(1402, 5, 15, 12, 30, 45)
+        self.assertEqual(f'{dt}', '1402-05-15 12:30:45')
+        self.assertEqual(f'{dt:%Y/%m/%d %H:%M}', '1402/05/15 12:30')
+        self.assertIn('.', f'{dt:f}')  # float timestamp
+        self.assertNotIn('.', f'{dt:s}')  # int timestamp

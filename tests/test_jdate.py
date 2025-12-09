@@ -184,3 +184,8 @@ class TestJDate(TestCase):
 
         with self.assertRaises(TypeError, msg='fromisoformat: argument must be str'):
             jdatetime.date.fromisoformat(1)
+
+    def test_format(self):
+        d = jdatetime.date(1402, 5, 15)
+        self.assertEqual(f'{d}', '1402-05-15')
+        self.assertEqual(f'{d:%Y/%m/%d}', '1402/05/15')
