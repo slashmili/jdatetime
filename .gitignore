@@ -3,7 +3,9 @@ build
 *.swp
 
 .tags
+.tox
 tags
 .idea/
 dist
+jdatetime.egg-info
 uv.lock
