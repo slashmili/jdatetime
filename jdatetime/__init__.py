@@ -3,6 +3,8 @@
 # was licensed under the Python license. Same license applies to all files in
 # the jdatetime package project.
 
+from __future__ import annotations
+
 import datetime as py_datetime
 import locale as _locale
 import platform
