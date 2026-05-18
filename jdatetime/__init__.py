@@ -560,7 +560,7 @@ class date:
         return self.strftime(format)
 
     # strftime helper functions
-    def _strftime_get_attr_value(self, attr: str, fmt: str, fb: str | None =None) -> str | None:
+    def _strftime_get_attr_value(self, attr: str, fmt: str, fb: str | None = None) -> str | None:
         try:
             return fmt % getattr(self, attr)
         except AttributeError:
@@ -984,8 +984,9 @@ class datetime(date):
             return datetime.fromgregorian(datetime=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
-    def __sub__(self, other: py_datetime.timedelta | py_datetime.datetime | datetime) -> datetime | py_datetime.timedelta:
-
+    def __sub__(
+        self, other: py_datetime.timedelta | py_datetime.datetime | datetime
+    ) -> datetime | py_datetime.timedelta:
         """x.__sub__(y) <==> x-y"""
 
         if isinstance(other, py_datetime.timedelta):
