@@ -3,10 +3,14 @@
 # was licensed under the Python license. Same license applies to all files in
 # the jdatetime package project.
 
+from __future__ import annotations
+
 import datetime as py_datetime
 import locale as _locale
 import platform
 import re
+import time as py_time
+import typing
 from functools import partial as _partial
 
 try:
@@ -62,7 +66,7 @@ else:
     FA_LOCALE = 'fa_IR'
 
 
-def _format_time(hour, minute, second, microsecond, timespec='auto'):
+def _format_time(hour, minute, second, microsecond, timespec='auto') -> str:
     specs = {
         'hours': '{:02d}',
         'minutes': '{:02d}:{:02d}',
@@ -87,14 +91,14 @@ def _format_time(hour, minute, second, microsecond, timespec='auto'):
 
 
 class time(py_datetime.time):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'jdatetime.time({self.hour}, {self.minute}, {self.second})'
 
 
 _thread_local_locales = dict()
 
 
-def set_locale(locale):
+def set_locale(locale: str | None) -> str | None:
     """Set the thread local module locale. This will be the default locale
     for new date/datetime instances in current thread.
     Returns the previous value of locale set on current thread.
@@ -113,7 +117,7 @@ def set_locale(locale):
     return prev_locale
 
 
-def get_locale():
+def get_locale() -> str | None:
     """Get the thread local module locale. This will be the default locale
     for newly date/datetime instances in current thread.
 
@@ -198,27 +202,27 @@ class date:
     j_ampm_fa = {'PM': 'بعد از ظهر', 'AM': 'قبل از ظهر'}
 
     @property
-    def year(self):
+    def year(self) -> int:
         return self.__year
 
     @property
-    def cyear(self):
+    def cyear(self) -> int:
         return self.__year % 100
 
     @property
-    def month(self):
+    def month(self) -> int:
         return self.__month
 
     @property
-    def day(self):
+    def day(self) -> int:
         return self.__day
 
-    def timetuple(self):
+    def timetuple(self) -> py_time.struct_time:
         "Return local time tuple compatible with time.localtime()."
         return self.togregorian().timetuple()
 
     @property
-    def locale(self):
+    def locale(self) -> str | None:
         return self.__locale
 
     __year = 0
@@ -226,12 +230,12 @@ class date:
     __day = 0
     __locale = None
 
-    def _check_arg(self, value):
+    def _check_arg(self, value) -> bool:
         if isinstance(value, int):
             return True
         return False
 
-    def __init__(self, year, month, day, **kwargs):
+    def __init__(self, year: int, month: int, day: int, **kwargs):
         """date(year, month, day) --> date object"""
         if not (self._check_arg(year) and self._check_arg(month) and self._check_arg(day)):
             raise TypeError('an integer is required' + repr(type(year)))
@@ -268,7 +272,7 @@ class date:
             self.j_weekdays_short = self.j_weekdays_short_en
             self.j_ampm = self.j_ampm_en
 
-    def _is_fa_locale(self):
+    def _is_fa_locale(self) -> bool:
         if self.__locale and self.__locale == FA_LOCALE:
             return True
         if FA_LOCALE in _locale.getlocale():
@@ -283,18 +287,18 @@ class date:
     non-equal date objects, timedelta(days=1)."""
     resolution = timedelta(1)
 
-    def isleap(self):
+    def isleap(self) -> bool:
         """check if year is leap year
         algortim is based on http://en.wikipedia.org/wiki/Leap_year"""
         return self.year % 33 in (1, 5, 9, 13, 17, 22, 26, 30)
 
-    def togregorian(self):
+    def togregorian(self) -> py_datetime.date:
         """Convert current jalali date to gregorian and return datetime.date"""
         (y, m, d) = JalaliToGregorian(self.year, self.month, self.day).getGregorianList()
         return py_datetime.date(y, m, d)
 
     @staticmethod
-    def fromgregorian(**kw):
+    def fromgregorian(**kw) -> date:
         """Convert gregorian to jalali and return jdatetime.date
 
         jdatetime.date.fromgregorian(day=X,month=X,year=X)
@@ -323,20 +327,20 @@ class date:
         raise ValueError(' '.join(error_msg))
 
     @staticmethod
-    def today():
+    def today() -> date:
         """Current date or datetime:  same as self.__class__.fromtimestamp(time.time())."""
         to = py_datetime.date.today()
         (y, m, d) = GregorianToJalali(to.year, to.month, to.day).getJalaliList()
         return date(y, m, d)
 
     @staticmethod
-    def fromtimestamp(timestamp):
+    def fromtimestamp(timestamp) -> date:
         d = py_datetime.date.fromtimestamp(timestamp)
         (y, m, d) = GregorianToJalali(d.year, d.month, d.day).getJalaliList()
         return date(y, m, d)
 
     @staticmethod
-    def fromisoformat(date_string: str):
+    def fromisoformat(date_string: str) -> date:
         """
         Convert an ISO 8601 formatted string to a jdatetime.date
         """
@@ -350,13 +354,13 @@ class date:
         else:
             raise ValueError(f'Invalid isoformat string: {date_string!r}')
 
-    def toordinal(self):
+    def toordinal(self) -> int:
         """Return proleptic jalali ordinal. Farvardin 1 of year 1 which is equal to 622-3-21 of Gregorian."""
         d = self.togregorian()
         return d.toordinal() - 226894
 
     @staticmethod
-    def fromordinal(ordinal):
+    def fromordinal(ordinal: int) -> date:
         """int -> date corresponding to a proleptic Jalali ordinal.
         it starts from Farvardin 1 of year 1, which is equal to 622-3-21 of Gregorian"""
         if ordinal < 1:
@@ -366,30 +370,30 @@ class date:
         return date(y, m, d)
 
     @staticmethod
-    def j_month_to_num(month_name):
+    def j_month_to_num(month_name: str) -> int:
         return date.j_months_en.index(month_name.lower().capitalize()) + 1
 
     @staticmethod
-    def j_month_short_to_num(month_name):
+    def j_month_short_to_num(month_name: str) -> int:
         return date.j_months_short_en.index(month_name.lower().capitalize()) + 1
 
     @staticmethod
-    def j_month_fa_to_num(month_name):
+    def j_month_fa_to_num(month_name: str) -> int:
         return date.j_months_fa.index(month_name) + 1
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'jdatetime.date({self.year}, {self.month}, {self.day})'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.strftime('%Y-%m-%d')
 
-    def __add__(self, timedelta):
+    def __add__(self, timedelta: py_datetime.timedelta) -> date:
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
             return date.fromgregorian(date=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
-    def __sub__(self, other):
+    def __sub__(self, other: py_datetime.timedelta | py_datetime.date | date) -> date | py_datetime.timedelta:
         """x.__sub__(y) <==> x-y"""
 
         if isinstance(other, py_datetime.timedelta):
@@ -401,13 +405,13 @@ class date:
 
         return NotImplemented
 
-    def __radd__(self, timedelta):
+    def __radd__(self, timedelta: py_datetime.timedelta) -> date:
         """x.__radd__(y) <==> y+x"""
         if isinstance(timedelta, py_datetime.timedelta):
             return self.__add__(timedelta)
         return NotImplemented
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: date | py_datetime.date) -> date | py_datetime.timedelta:
         """x.__rsub__(y) <==> y-x"""
         if isinstance(other, date):
             return other.__sub__(self)
@@ -415,7 +419,7 @@ class date:
             return other - self.togregorian()
         return NotImplemented
 
-    def __eq__(self, other_date):
+    def __eq__(self, other_date: date | py_datetime.date | None) -> bool:
         """x.__eq__(y) <==> x==y"""
         if other_date is None:
             return False
@@ -432,7 +436,7 @@ class date:
             return True
         return False
 
-    def __ge__(self, other_date):
+    def __ge__(self, other_date: date | py_datetime.date) -> bool:
         """x.__ge__(y) <==> x>=y"""
         if isinstance(other_date, py_datetime.date):
             return self.__ge__(date.fromgregorian(date=other_date))
@@ -448,7 +452,7 @@ class date:
                 return True
         return False
 
-    def __gt__(self, other_date):
+    def __gt__(self, other_date: date | py_datetime.date) -> bool:
         """x.__gt__(y) <==> x>y"""
         if isinstance(other_date, py_datetime.date):
             return self.__gt__(date.fromgregorian(date=other_date))
@@ -464,7 +468,7 @@ class date:
                 return True
         return False
 
-    def __le__(self, other_date):
+    def __le__(self, other_date: date | py_datetime.date) -> bool:
         """x.__le__(y) <==> x<=y"""
         if isinstance(other_date, py_datetime.date):
             return self.__le__(date.fromgregorian(date=other_date))
@@ -473,7 +477,7 @@ class date:
 
         return not self.__gt__(other_date)
 
-    def __lt__(self, other_date):
+    def __lt__(self, other_date: date | py_datetime.date) -> bool:
         """x.__lt__(y) <==> x<y"""
         if isinstance(other_date, py_datetime.date):
             return self.__lt__(date.fromgregorian(date=other_date))
@@ -482,16 +486,16 @@ class date:
 
         return not self.__ge__(other_date)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """x.__hash__() <==> hash(x)"""
         gd = self.togregorian()
         return gd.__hash__()
 
-    def ctime(self):
+    def ctime(self) -> str:
         """Return ctime() style string."""
         return self.strftime('%c')
 
-    def replace(self, year=0, month=0, day=0):
+    def replace(self, year: int = 0, month: int = 0, day: int = 0) -> date:
         """Return date with new specified fields."""
         new_year = self.year
         new_month = self.month
@@ -506,7 +510,7 @@ class date:
 
         return date(new_year, new_month, new_day, locale=self.locale)
 
-    def yday(self):
+    def yday(self) -> int:
         """return day of year"""
         day = 0
         for i in range(0, self.month - 1):
@@ -514,41 +518,41 @@ class date:
         day = day + self.day
         return day
 
-    def weekday(self):
+    def weekday(self) -> int:
         """Return the day of the week represented by the date.
         Shanbeh == 0 ... Jomeh == 6"""
         gd = self.togregorian()
         return (gd.weekday() - 5) % 7
 
-    def isoweekday(self):
+    def isoweekday(self) -> int:
         """Return the day of the week as an integer, where Shanbeh is 1 and Jomeh is 7"""
         return self.weekday() + 1
 
-    def jweekday_short(self):
+    def jweekday_short(self) -> str:
         return self.j_weekdays_short[self.weekday()]
 
-    def jweekday(self):
+    def jweekday(self) -> str:
         return self.j_weekdays[self.weekday()]
 
-    def weeknumber(self):
+    def weeknumber(self) -> int:
         """Return week number"""
         return (self.yday() + date(self.year, 1, 1).weekday() - 1) // 7 + 1
 
-    def jmonth_short(self):
+    def jmonth_short(self) -> str:
         return self.j_months_short[self.month - 1]
 
-    def jmonth(self):
+    def jmonth(self) -> str:
         return self.j_months[self.month - 1]
 
-    def isocalendar(self):
+    def isocalendar(self) -> tuple[int, int, int]:
         """Return a 3-tuple, (ISO year, ISO week number, ISO weekday)."""
         return (self.year, self.weeknumber(), self.isoweekday())
 
-    def isoformat(self):
+    def isoformat(self) -> str:
         """Return a string representing the date in ISO 8601 format, 'YYYY-MM-DD'"""
         return self.strftime('%Y-%m-%d')
 
-    def __format__(self, format):
+    def __format__(self, format: str) -> str:
         """
         PEP-3101
         Make string formating work!
@@ -556,34 +560,34 @@ class date:
         return self.strftime(format)
 
     # strftime helper functions
-    def _strftime_get_attr_value(self, attr, fmt, fb=None):
+    def _strftime_get_attr_value(self, attr: str, fmt: str, fb: str | None = None) -> str | None:
         try:
             return fmt % getattr(self, attr)
         except AttributeError:
             return fb
 
-    def _strftime_get_method_value(self, attr, fmt):
+    def _strftime_get_method_value(self, attr: str, fmt: str) -> str:
         return fmt % getattr(self, attr)()
 
-    def _strftime_p(self):
+    def _strftime_p(self) -> str:
         return self.j_ampm['AM']
 
-    def _strftime_z(self):
+    def _strftime_z(self) -> str:
         return ''
 
-    def _strftime_cap_z(self):
+    def _strftime_cap_z(self) -> str:
         return ''
 
-    def _strftime_c(self):
+    def _strftime_c(self) -> str:
         return self.strftime('%a %b %d %H:%M:%S %Y')
 
-    def _strftime_cap_x(self):
+    def _strftime_cap_x(self) -> str:
         return self.strftime('%H:%M:%S')
 
-    def _strftime_x(self):
+    def _strftime_x(self) -> str:
         return self.strftime('%m/%d/%y')
 
-    def strftime(self, format):
+    def strftime(self, format: str) -> str:
         # Convert to unicode
         try:
             format = format.decode('utf-8')
@@ -601,7 +605,7 @@ class date:
 
         return re.sub(r'%-?[A-Za-z%-]', repl, format)
 
-    def aslocale(self, locale):
+    def aslocale(self, locale: str) -> date:
         return date(self.year, self.month, self.day, locale=locale)
 
 
@@ -643,26 +647,26 @@ class datetime(date):
 
     __time = None
 
-    def time(self):
+    def time(self) -> time:
         """Return time object with same time but with tzinfo=None."""
         return time(self.hour, self.minute, self.second, self.microsecond, fold=self.fold)
 
-    def date(self):
+    def date(self) -> date:
         """Return date object with same year, month and day."""
         return date(self.year, self.month, self.day, locale=self.locale)
 
     def __init__(
         self,
-        year,
-        month,
-        day,
-        hour=None,
-        minute=None,
-        second=None,
-        microsecond=None,
-        tzinfo=None,
+        year: int,
+        month: int,
+        day: int,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: tzinfo | None = None,
         *,
-        fold=0,
+        fold: typing.Literal[0, 1] = 0,
         **kwargs,
     ):
         date.__init__(self, year, month, day, **kwargs)
@@ -693,7 +697,7 @@ class datetime(date):
 
         self.__time = time(tmp_hour, tmp_min, tmp_sec, tmp_micr, tzinfo, fold=fold)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.__time.tzinfo is not None:
             return (
                 f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute},'
@@ -715,12 +719,12 @@ class datetime(date):
         return f'jdatetime.datetime({self.year}, {self.month}, {self.day}, {self.hour}, {self.minute})'
 
     @staticmethod
-    def today():
+    def today() -> datetime:
         """Current date or datetime"""
         return datetime.now()
 
     @staticmethod
-    def now(tz=None):
+    def now(tz: py_datetime.tzinfo | None = None) -> datetime:
         """[tz] -> new datetime with tz's local day and time."""
         now_datetime = py_datetime.datetime.now(tz)
         now = date.fromgregorian(date=now_datetime.date())
@@ -736,7 +740,7 @@ class datetime(date):
         )
 
     @staticmethod
-    def utcnow():
+    def utcnow() -> datetime:
         """Return a new datetime representing UTC day and time."""
         now_datetime = py_datetime.datetime.utcnow()
         now = date.fromgregorian(date=now_datetime.date())
@@ -751,7 +755,7 @@ class datetime(date):
         )
 
     @classmethod
-    def fromisoformat(cls, date_string: str):
+    def fromisoformat(cls, date_string: str) -> datetime:
         """
         Convert an ISO 8601 formatted string to a jdatetime.datetime
         """
@@ -766,7 +770,7 @@ class datetime(date):
         )
 
     @staticmethod
-    def fromtimestamp(timestamp, tz=None):
+    def fromtimestamp(timestamp: float, tz: py_datetime.tzinfo | None = None) -> datetime:
         """timestamp[, tz] -> tz's local time from POSIX timestamp."""
         now_datetime = py_datetime.datetime.fromtimestamp(timestamp, tz)
         now = date.fromgregorian(date=now_datetime.date())
@@ -782,7 +786,7 @@ class datetime(date):
         )
 
     @staticmethod
-    def utcfromtimestamp(timestamp):
+    def utcfromtimestamp(timestamp: float) -> datetime:
         """timestamp -> UTC datetime from a POSIX timestamp (like time.time())."""
         now_datetime = py_datetime.datetime.fromtimestamp(timestamp)
         now = date.fromgregorian(date=now_datetime.date())
@@ -797,7 +801,7 @@ class datetime(date):
         )
 
     @staticmethod
-    def combine(d=None, t=None, **kw):
+    def combine(d: date | None = None, t: time | None = None, **kw) -> datetime:
         """date, time -> datetime with same date and time fields"""
 
         c_date = None
@@ -835,11 +839,11 @@ class datetime(date):
             fold=c_time.fold,
         )
 
-    def timestamp(self):
+    def timestamp(self) -> float:
         return self.togregorian().timestamp()
 
     @staticmethod
-    def fromordinal(ordinal):
+    def fromordinal(ordinal: int) -> datetime:
         """int -> date corresponding to a proleptic Jalali ordinal.
         it starts from Farvardin 1 of year 1, which is equal to 622-3-21 of Gregorian
         """
@@ -850,31 +854,31 @@ class datetime(date):
         return datetime(j_date.year, j_date.month, j_date.day, 0, 0)
 
     @property
-    def hour(self):
+    def hour(self) -> int:
         return self.__time.hour
 
     @property
-    def minute(self):
+    def minute(self) -> int:
         return self.__time.minute
 
     @property
-    def second(self):
+    def second(self) -> int:
         return self.__time.second
 
     @property
-    def microsecond(self):
+    def microsecond(self) -> int:
         return self.__time.microsecond
 
     @property
-    def tzinfo(self):
+    def tzinfo(self) -> py_datetime.tzinfo | None:
         return self.__time.tzinfo
 
     @property
-    def fold(self):
+    def fold(self) -> typing.Literal[0, 1]:
         return self._fold
 
     @staticmethod
-    def strptime(date_string, format):
+    def strptime(date_string: str, format: str) -> datetime:
         """string, format -> new datetime parsed from a string (like time.strptime())"""
         regex = _directives_to_pattern(re.escape(format))
 
@@ -915,16 +919,16 @@ class datetime(date):
 
     def replace(
         self,
-        year=None,
-        month=None,
-        day=None,
-        hour=None,
-        minute=None,
-        second=None,
-        microsecond=None,
-        tzinfo=True,
-        fold=None,
-    ):
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        microsecond: int | None = None,
+        tzinfo: py_datetime.tzinfo | None = True,
+        fold: typing.Literal[0, 1] | None = None,
+    ) -> datetime:
         """Return datetime with new specified fields."""
         t_year = self.year
         if year is not None:
@@ -974,13 +978,15 @@ class datetime(date):
             fold=fold,
         )
 
-    def __add__(self, timedelta):
+    def __add__(self, timedelta: py_datetime.timedelta) -> datetime:
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
             return datetime.fromgregorian(datetime=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
-    def __sub__(self, other):
+    def __sub__(
+        self, other: py_datetime.timedelta | py_datetime.datetime | datetime
+    ) -> datetime | py_datetime.timedelta:
         """x.__sub__(y) <==> x-y"""
 
         if isinstance(other, py_datetime.timedelta):
@@ -991,13 +997,13 @@ class datetime(date):
             return self.togregorian() - other.togregorian()
         return NotImplemented
 
-    def __radd__(self, timedelta):
+    def __radd__(self, timedelta: py_datetime.timedelta) -> datetime:
         """x.__radd__(y) <==> y+x"""
         if isinstance(timedelta, py_datetime.timedelta):
             return self.__add__(timedelta)
         return NotImplemented
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: datetime | py_datetime.datetime) -> datetime | py_datetime.timedelta:
         """x.__rsub__(y) <==> y-x"""
         if isinstance(other, datetime):
             return other.__sub__(self)
@@ -1005,7 +1011,7 @@ class datetime(date):
             return other - self.togregorian()
         return NotImplemented
 
-    def __eq__(self, other_datetime):
+    def __eq__(self, other_datetime: datetime | py_datetime.datetime | None) -> bool:
         """x.__eq__(y) <==> x==y"""
         if other_datetime is None:
             return False
@@ -1022,7 +1028,7 @@ class datetime(date):
 
         return self.togregorian() == other_datetime
 
-    def __ge__(self, other_datetime):
+    def __ge__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
         """x.__ge__(y) <==> x>=y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1032,7 +1038,7 @@ class datetime(date):
 
         return self.togregorian() >= other_datetime
 
-    def __gt__(self, other_datetime):
+    def __gt__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
         """x.__gt__(y) <==> x>y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1042,7 +1048,7 @@ class datetime(date):
 
         return self.togregorian() > other_datetime
 
-    def __le__(self, other_datetime):
+    def __le__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
         """x.__le__(y) <==> x<=y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1052,7 +1058,7 @@ class datetime(date):
 
         return self.togregorian() <= other_datetime
 
-    def __lt__(self, other_datetime):
+    def __lt__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
         """x.__lt__(y) <==> x<y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1062,13 +1068,13 @@ class datetime(date):
 
         return self.togregorian() < other_datetime
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """x.__hash__() <==> hash(x)"""
         gdt = self.togregorian()
         return gdt.__hash__()
 
     @staticmethod
-    def fromgregorian(**kw):
+    def fromgregorian(**kw) -> datetime:
         """Convert gregorian to jalali and return jadatetime.datetime
         jadatetime.date.fromgregorian(day=X,month=X,year=X,[hour=X, [minute=X, [second=X, [tzinfo=X]]]])
         jadatetime.date.fromgregorian(date=datetime.date)
@@ -1129,29 +1135,29 @@ class datetime(date):
             'or fromgregorian(date=datetime.date) or fromgregorian(datetime=datetime.datetime)'
         )
 
-    def togregorian(self):
+    def togregorian(self) -> py_datetime.datetime:
         """Convert current jalali date to gregorian and return datetime.datetime"""
         gdate = date.togregorian(self)
         return py_datetime.datetime.combine(gdate, self.__time)
 
-    def astimezone(self, tz):
+    def astimezone(self, tz: py_datetime.tzinfo) -> datetime:
         """tz -> convert to local time in new timezone tz"""
         gdt = self.togregorian()
         gdt = gdt.astimezone(tz)
         return datetime.fromgregorian(datetime=gdt)
 
-    def ctime(self):
+    def ctime(self) -> str:
         """Return ctime() style string."""
         return self.strftime('%c')
 
     # TODO: check what this def does !
-    def dst(self):
+    def dst(self) -> py_datetime.timedelta | None:
         """Return self.tzinfo.dst(self)"""
         if self.tzinfo:
             return self.tzinfo.dst(self)
         return None
 
-    def isoformat(self, sep='T', timespec='auto'):
+    def isoformat(self, sep: str = 'T', timespec: str = 'auto') -> str:
         """[sep] -> string in ISO 8601 format,
         YYYY-MM-DDTHH:MM:SS[.mmmmmm][+HH:MM]."""
 
@@ -1164,36 +1170,36 @@ class datetime(date):
 
         return f'{date_}{sep}{time_}{tz}'
 
-    def timetuple(self):
+    def timetuple(self) -> py_time.struct_time:
         """Return time tuple, compatible with time.localtime().
         It returns Gregorian object!
         """
         dt = self.togregorian()
         return dt.timetuple()
 
-    def timetz(self):
+    def timetz(self) -> time:
         """Return time object with same time and tzinfo."""
         return self.__time
 
-    def tzname(self):
+    def tzname(self) -> str | None:
         """Return self.tzinfo.tzname(self)"""
         if self.tzinfo:
             return self.tzinfo.tzname(self.togregorian())
         return None
 
-    def utcoffset(self):
+    def utcoffset(self) -> py_datetime.timedelta | None:
         """Return self.tzinfo.utcoffset(self)."""
         if self.tzinfo:
             return self.tzinfo.utcoffset(self.togregorian())
 
-    def utctimetuple(self):
+    def utctimetuple(self) -> py_time.struct_time:
         """Return UTC time tuple, compatible with time.localtime().
         It returns Gregorian object !
         """
         dt = self.togregorian()
         return dt.utctimetuple()
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.microsecond == 0:
             mil = ''
         else:
@@ -1201,7 +1207,7 @@ class datetime(date):
         tz = self.strftime('%z')
         return self.strftime('%Y-%m-%d %H:%M:%S') + f'{mil}{tz}'
 
-    def aslocale(self, locale):
+    def aslocale(self, locale) -> datetime:
         return datetime(
             self.year,
             self.month,
@@ -1215,7 +1221,7 @@ class datetime(date):
         )
 
     @staticmethod
-    def _timezone_from_string(timezone_string):
+    def _timezone_from_string(timezone_string: str | None) -> py_datetime.timezone | None:
         if timezone_string is None:
             return None
         z = timezone_string  # keep the original string for value error exception.
@@ -1240,12 +1246,12 @@ class datetime(date):
         timezone = py_datetime.timezone(timedelta(seconds=gmtoff, microseconds=gmtoff_fraction))
         return timezone
 
-    def _strftime_p(self):
+    def _strftime_p(self) -> str:
         if self.hour >= 12:
             return self.j_ampm['PM']
         return self.j_ampm['AM']
 
-    def _strftime_z(self):
+    def _strftime_z(self) -> str:
         diff = self.utcoffset()
         if diff is None:
             return ''
@@ -1261,5 +1267,5 @@ class datetime(date):
         diff_min = tmp_min % 60
         return f'{sign}{diff_hour:02d}{diff_min:02d}'
 
-    def _strftime_cap_z(self):
+    def _strftime_cap_z(self) -> str:
         return self.tzname() or ''
