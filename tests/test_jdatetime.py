@@ -211,6 +211,27 @@ class TestJDateTime(TestCase):
         dt = jdatetime.datetime(1389, 2, 17, 19, 10, 2, tzinfo=teh)
         self.assertEqual(dt.strftime('%Z %z'), 'IRDT +0330')
 
+    def test_strftime_fa_locale_uses_short_month_names_for_b_directive(self):
+        tests = [
+            (1, 'فرو', 'فروردین'),
+            (2, 'ارد', 'اردیبهشت'),
+            (3, 'خرد', 'خرداد'),
+            (4, 'تیر', 'تیر'),
+            (5, 'مرد', 'مرداد'),
+            (6, 'شهر', 'شهریور'),
+            (7, 'مهر', 'مهر'),
+            (8, 'آبا', 'آبان'),
+            (9, 'آذر', 'آذر'),
+            (10, 'دی', 'دی'),
+            (11, 'بهم', 'بهمن'),
+            (12, 'اسف', 'اسفند'),
+        ]
+        for month, expected_short_month, expected_full_month in tests:
+            with self.subTest(month=month):
+                dt = jdatetime.datetime(1400, month, 1, locale=jdatetime.FA_LOCALE)
+                self.assertEqual(dt.strftime('%b'), expected_short_month)
+                self.assertEqual(dt.strftime('%B'), expected_full_month)
+
     def test_strftime_unicode(self):
         s = jdatetime.date(1390, 2, 23)
         self.assertEqual(s.strftime(b'%a %A'), 'Fri Friday')
@@ -384,6 +405,7 @@ class TestJDateTime(TestCase):
             ('۱4 ORD 14۰0', '%d %b %Y', (1400, 2, 14)),
             ('۱۴ دی ۱۴۰۰', '%d %B %Y', (1400, 10, 14)),
             ('۱۴ dey ۱۴۰۰', '%d %b %Y', (1400, 10, 14)),
+            ('۱۴ ارد ۱۴۰۰', '%d %b %Y', (1400, 2, 14)),
         ]
         for date_string, date_format, expected_date in tests:
             with self.subTest(date_string=date_string, date_format=date_format):

@@ -190,6 +190,20 @@ class date:
         'بهمن',
         'اسفند',
     ]
+    j_months_short_fa = [
+        'فرو',
+        'ارد',
+        'خرد',
+        'تیر',
+        'مرد',
+        'شهر',
+        'مهر',
+        'آبا',
+        'آذر',
+        'دی',
+        'بهم',
+        'اسف',
+    ]
     j_weekdays_fa = [
         'شنبه',
         'یک‌شنبه',
@@ -261,7 +275,7 @@ class date:
 
         if self._is_fa_locale():
             self.j_months = self.j_months_fa
-            self.j_months_short = self.j_months_fa
+            self.j_months_short = self.j_months_short_fa
             self.j_weekdays = self.j_weekdays_fa
             self.j_weekdays_short = self.j_weekdays_fa
             self.j_ampm = self.j_ampm_fa
@@ -380,6 +394,10 @@ class date:
     @staticmethod
     def j_month_fa_to_num(month_name: str) -> int:
         return date.j_months_fa.index(month_name) + 1
+
+    @staticmethod
+    def j_month_short_fa_to_num(month_name: str) -> int:
+        return date.j_months_short_fa.index(month_name) + 1
 
     def __repr__(self) -> str:
         return f'jdatetime.date({self.year}, {self.month}, {self.day})'
@@ -629,7 +647,7 @@ _DIRECTIVE_PATTERNS = {
     '%S': r'(?P<S>\d{1,2})',
     '%f': r'(?P<f>\d{1,6})',
     '%B': r'(?P<B>[a-zA-Z\u0600-\u06EF\uFB8A\u067E\u0686\u06AF]{2,12})',
-    '%b': r'(?P<b>[a-zA-Z]{3})',
+    '%b': r'(?P<b>[a-zA-Z\u0600-\u06EF\uFB8A\u067E\u0686\u06AF]{2,4})',
     '%z': r'(?P<z>[+-]\d\d:?[0-5\u06F0-\u06F5]\d(:?[0-5\u06F0-\u06F5]\d(\.\d{1,6})?)?)',
 }
 
@@ -895,7 +913,10 @@ class datetime(date):
         if isinstance(month, str):
             try:
                 if get('b'):
-                    month = date.j_month_short_to_num(month_name=month)
+                    if month.isascii():
+                        month = date.j_month_short_to_num(month_name=month)
+                    else:
+                        month = date.j_month_short_fa_to_num(month_name=month)
                 elif month.isascii():
                     month = date.j_month_to_num(month_name=month)
                 else:
