@@ -45,8 +45,8 @@ STRFTIME_MAPPING = {
     '%f': ('_strftime_get_attr_value', {'attr': 'microsecond', 'fmt': '%06.d', 'fb': '000000'}),
     '%H': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%02.d', 'fb': '00'}),
     '%-H': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%d', 'fb': '0'}),
-    '%I': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%02.d', 'fb': '12'}),
-    '%-I': ('_strftime_get_attr_value', {'attr': 'hour', 'fmt': '%d', 'fb': '12'}),
+    '%I': ('_strftime_get_attr_value', {'attr': 'hour12', 'fmt': '%02.d', 'fb': '12'}),
+    '%-I': ('_strftime_get_attr_value', {'attr': 'hour12', 'fmt': '%d', 'fb': '12'}),
     '%M': ('_strftime_get_attr_value', {'attr': 'minute', 'fmt': '%02.d', 'fb': '00'}),
     '%-M': ('_strftime_get_attr_value', {'attr': 'minute', 'fmt': '%d', 'fb': '0'}),
     '%S': ('_strftime_get_attr_value', {'attr': 'second', 'fmt': '%02.d', 'fb': '00'}),
@@ -870,6 +870,12 @@ class datetime(date):
     @property
     def hour(self) -> int:
         return self.__time.hour
+
+    @property
+    def hour12(self) -> int:
+        """Return the hour on a 12-hour clock (1..12), used by the %I directive."""
+        hour = self.hour % 12
+        return 12 if hour == 0 else hour
 
     @property
     def minute(self) -> int:
