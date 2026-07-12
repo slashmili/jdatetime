@@ -232,10 +232,6 @@ class TestJDateTime(TestCase):
                 self.assertEqual(dt.strftime('%b'), expected_short_month)
                 self.assertEqual(dt.strftime('%B'), expected_full_month)
 
-    def test_strftime_unicode(self):
-        s = jdatetime.date(1390, 2, 23)
-        self.assertEqual(s.strftime(b'%a %A'), 'Fri Friday')
-
     def test_strftime_single_digit(self):
         dt = jdatetime.datetime(1390, 2, 3, 4, 5, 6)
         self.assertEqual(

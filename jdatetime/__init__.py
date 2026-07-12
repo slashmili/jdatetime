@@ -606,12 +606,6 @@ class date:
         return self.strftime('%m/%d/%y')
 
     def strftime(self, format: str) -> str:
-        # Convert to unicode
-        try:
-            format = format.decode('utf-8')
-        except Exception:
-            pass
-
         def repl(match):
             symbol = match[0]
             if symbol in STRFTIME_MAPPING:
