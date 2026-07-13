@@ -12,6 +12,7 @@ import re
 import time as py_time
 import typing
 from functools import partial as _partial
+from typing import overload as _overload
 
 try:
     from greenlet import getcurrent as get_ident
@@ -405,17 +406,23 @@ class date:
     def __str__(self) -> str:
         return self.strftime('%Y-%m-%d')
 
-    def __add__(self, timedelta: py_datetime.timedelta) -> date:
+    def __add__(self, timedelta: timedelta, /) -> date:
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
             return date.fromgregorian(date=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
-    def __sub__(self, other: py_datetime.timedelta | py_datetime.date | date) -> date | py_datetime.timedelta:
+    @_overload
+    def __sub__(self, other: py_datetime.datetime | datetime, /) -> typing.NoReturn: ...
+    @_overload
+    def __sub__(self, other: date | py_datetime.date, /) -> timedelta: ...
+    @_overload
+    def __sub__(self, other: timedelta, /) -> date: ...
+    def __sub__(self, other: object, /) -> date | timedelta:
         """x.__sub__(y) <==> x-y"""
 
-        if isinstance(other, py_datetime.timedelta):
-            return date.fromgregorian(date=self.togregorian() - other, locale=self.locale)
+        if isinstance(other, timedelta):
+            return self.fromgregorian(date=self.togregorian() - other, locale=self.locale)
         if isinstance(other, py_datetime.date):
             return self.togregorian() - other
         if isinstance(other, date):
@@ -423,13 +430,13 @@ class date:
 
         return NotImplemented
 
-    def __radd__(self, timedelta: py_datetime.timedelta) -> date:
+    def __radd__(self, timedelta: timedelta, /) -> date:
         """x.__radd__(y) <==> y+x"""
         if isinstance(timedelta, py_datetime.timedelta):
             return self.__add__(timedelta)
         return NotImplemented
 
-    def __rsub__(self, other: date | py_datetime.date) -> date | py_datetime.timedelta:
+    def __rsub__(self, other: date | py_datetime.date, /) -> timedelta:
         """x.__rsub__(y) <==> y-x"""
         if isinstance(other, date):
             return other.__sub__(self)
@@ -437,7 +444,7 @@ class date:
             return other - self.togregorian()
         return NotImplemented
 
-    def __eq__(self, other_date: date | py_datetime.date | None) -> bool:
+    def __eq__(self, other_date: object, /) -> bool:
         """x.__eq__(y) <==> x==y"""
         if other_date is None:
             return False
@@ -454,7 +461,7 @@ class date:
             return True
         return False
 
-    def __ge__(self, other_date: date | py_datetime.date) -> bool:
+    def __ge__(self, other_date: date, /) -> bool:
         """x.__ge__(y) <==> x>=y"""
         if isinstance(other_date, py_datetime.date):
             return self.__ge__(date.fromgregorian(date=other_date))
@@ -470,7 +477,7 @@ class date:
                 return True
         return False
 
-    def __gt__(self, other_date: date | py_datetime.date) -> bool:
+    def __gt__(self, other_date: date, /) -> bool:
         """x.__gt__(y) <==> x>y"""
         if isinstance(other_date, py_datetime.date):
             return self.__gt__(date.fromgregorian(date=other_date))
@@ -486,7 +493,7 @@ class date:
                 return True
         return False
 
-    def __le__(self, other_date: date | py_datetime.date) -> bool:
+    def __le__(self, other_date: date, /) -> bool:
         """x.__le__(y) <==> x<=y"""
         if isinstance(other_date, py_datetime.date):
             return self.__le__(date.fromgregorian(date=other_date))
@@ -495,7 +502,7 @@ class date:
 
         return not self.__gt__(other_date)
 
-    def __lt__(self, other_date: date | py_datetime.date) -> bool:
+    def __lt__(self, other_date: date, /) -> bool:
         """x.__lt__(y) <==> x<y"""
         if isinstance(other_date, py_datetime.date):
             return self.__lt__(date.fromgregorian(date=other_date))
@@ -993,32 +1000,36 @@ class datetime(date):
             fold=fold,
         )
 
-    def __add__(self, timedelta: py_datetime.timedelta) -> datetime:
+    def __add__(self, timedelta: timedelta, /) -> datetime:
         """x.__add__(y) <==> x+y"""
         if isinstance(timedelta, py_datetime.timedelta):
             return datetime.fromgregorian(datetime=self.togregorian() + timedelta, locale=self.locale)
         return NotImplemented
 
-    def __sub__(
-        self, other: py_datetime.timedelta | py_datetime.datetime | datetime
-    ) -> datetime | py_datetime.timedelta:
+    # Match the stdlib datetime API. The subclass intentionally narrows
+    # the base-class overloads, so suppress override warnings.
+    @_overload
+    def __sub__(self, other: timedelta, /) -> datetime: ...
+    @_overload
+    def __sub__(self, other: datetime | py_datetime.datetime, /) -> timedelta: ...
+    def __sub__(self, other: object, /) -> datetime | timedelta:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__sub__(y) <==> x-y"""
 
-        if isinstance(other, py_datetime.timedelta):
-            return datetime.fromgregorian(datetime=self.togregorian() - other, locale=self.locale)
+        if isinstance(other, timedelta):
+            return self.fromgregorian(datetime=self.togregorian() - other, locale=self.locale)
         if isinstance(other, py_datetime.datetime):
             return self.togregorian() - other
         if isinstance(other, datetime):
             return self.togregorian() - other.togregorian()
         return NotImplemented
 
-    def __radd__(self, timedelta: py_datetime.timedelta) -> datetime:
+    def __radd__(self, timedelta: timedelta, /) -> datetime:
         """x.__radd__(y) <==> y+x"""
         if isinstance(timedelta, py_datetime.timedelta):
             return self.__add__(timedelta)
         return NotImplemented
 
-    def __rsub__(self, other: datetime | py_datetime.datetime) -> datetime | py_datetime.timedelta:
+    def __rsub__(self, other: datetime | py_datetime.datetime, /) -> timedelta:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__rsub__(y) <==> y-x"""
         if isinstance(other, datetime):
             return other.__sub__(self)
@@ -1026,7 +1037,7 @@ class datetime(date):
             return other - self.togregorian()
         return NotImplemented
 
-    def __eq__(self, other_datetime: datetime | py_datetime.datetime | None) -> bool:
+    def __eq__(self, other_datetime: object, /) -> bool:
         """x.__eq__(y) <==> x==y"""
         if other_datetime is None:
             return False
@@ -1043,7 +1054,7 @@ class datetime(date):
 
         return self.togregorian() == other_datetime
 
-    def __ge__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
+    def __ge__(self, other_datetime: datetime | py_datetime.datetime, /) -> bool:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__ge__(y) <==> x>=y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1053,7 +1064,7 @@ class datetime(date):
 
         return self.togregorian() >= other_datetime
 
-    def __gt__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
+    def __gt__(self, other_datetime: datetime | py_datetime.datetime, /) -> bool:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__gt__(y) <==> x>y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1063,7 +1074,7 @@ class datetime(date):
 
         return self.togregorian() > other_datetime
 
-    def __le__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
+    def __le__(self, other_datetime: datetime | py_datetime.datetime, /) -> bool:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__le__(y) <==> x<=y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1073,7 +1084,7 @@ class datetime(date):
 
         return self.togregorian() <= other_datetime
 
-    def __lt__(self, other_datetime: datetime | py_datetime.datetime) -> bool:
+    def __lt__(self, other_datetime: datetime | py_datetime.datetime, /) -> bool:  # type: ignore[override] # ty: ignore[invalid-method-override]
         """x.__lt__(y) <==> x<y"""
         if isinstance(other_datetime, datetime):
             other_datetime = other_datetime.togregorian()
@@ -1166,7 +1177,7 @@ class datetime(date):
         return self.strftime('%c')
 
     # TODO: check what this def does !
-    def dst(self) -> py_datetime.timedelta | None:
+    def dst(self) -> timedelta | None:
         """Return self.tzinfo.dst(self)"""
         if self.tzinfo:
             return self.tzinfo.dst(self)
@@ -1202,7 +1213,7 @@ class datetime(date):
             return self.tzinfo.tzname(self.togregorian())
         return None
 
-    def utcoffset(self) -> py_datetime.timedelta | None:
+    def utcoffset(self) -> timedelta | None:
         """Return self.tzinfo.utcoffset(self)."""
         if self.tzinfo:
             return self.tzinfo.utcoffset(self.togregorian())
