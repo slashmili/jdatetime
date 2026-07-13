@@ -15,7 +15,7 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup python
         uses: actions/setup-python@v5
         with:
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     name: ruff
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup python
         uses: actions/setup-python@v5
         with:
