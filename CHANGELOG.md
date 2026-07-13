@@ -1,15 +1,27 @@
 # Changelog
 
+## [6.0.0] - 2026-07-13
+
+### Fixed
+
+* Update type hints to match with typeshed #184
+* Drop legacy Python 2 bytes support #183
+
+### Add
+
+* Add persian short month for %b #180
+
+
 ## [5.3.0] - 2026-05-19
 
-## Add
+### Add
 
 * Add type hints
 
 
 ## [5.2.0] - 2025-01-26
 
-## Add
+### Add
 
 * Support for validating %A %a in strptime  #161
 
