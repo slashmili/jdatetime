@@ -1080,3 +1080,10 @@ class TestJdatetimeGetSetLocale(TestCase):
             r"unsupported operand type\(s\) for \-=: 'datetime' and 'object'",
         ):
             dt -= unknown_type
+
+    def test_resolution(self):
+        assert jdatetime.datetime.resolution == jdatetime.timedelta(microseconds=1)
+
+    def test_min_max(self):
+        assert jdatetime.datetime.max == jdatetime.datetime(9377, 12, 12, 23, 59, 59, 999999)
+        assert jdatetime.datetime.min == jdatetime.datetime(1, 1, 1, 0, 0)
