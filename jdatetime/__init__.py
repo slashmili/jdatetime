@@ -664,8 +664,6 @@ class datetime(date):
         year, month, day, [hour, [minute, [seconds, [microsecond, [tzinfo]]]]]
     )-> datetime objects"""
 
-    __time = None
-
     def time(self) -> time:
         """Return time object with same time but with tzinfo=None."""
         return time(self.hour, self.minute, self.second, self.microsecond, fold=self.fold)
