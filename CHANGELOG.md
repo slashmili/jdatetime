@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.1] - 2026-07-15
+
+### Fixed
+
+* Update type hint #187
+
+
 ## [6.0.0] - 2026-07-13
 
 ### Fixed
