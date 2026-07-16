@@ -12,7 +12,7 @@ import re
 import time as py_time
 import typing
 from functools import partial as _partial
-from typing import overload as _overload
+from typing import ClassVar as _ClassVar, overload as _overload
 
 try:
     from greenlet import getcurrent as get_ident
@@ -129,6 +129,14 @@ def get_locale() -> str | None:
 
 class date:
     """date(year, month, day) --> date object"""
+
+    """The earliest representable date, date(MINYEAR, 1, 1)"""
+    min: _ClassVar[date]
+    """The latest representable date, date(MAXYEAR, 12, 31)."""
+    max: _ClassVar[date]
+    """The smallest possible difference between
+    non-equal date objects, timedelta(days=1)."""
+    resolution: _ClassVar[timedelta] = py_datetime.date.resolution
 
     j_months_en = [
         'Farvardin',
@@ -297,10 +305,6 @@ class date:
         if FA_LOCALE in _locale.getdefaultlocale():
             return True
         return False
-
-    """The smallest possible difference between
-    non-equal date objects, timedelta(days=1)."""
-    resolution = timedelta(1)
 
     def isleap(self) -> bool:
         """check if year is leap year
@@ -628,10 +632,7 @@ class date:
         return date(self.year, self.month, self.day, locale=locale)
 
 
-"""The earliest representable date, date(MINYEAR, 1, 1)"""
 date.min = date(MINYEAR, 1, 1)
-
-"""The latest representable date, date(MAXYEAR, 12, 31)."""
 date.max = date(MAXYEAR, 12, 30)
 
 _DIRECTIVE_PATTERNS = {
@@ -663,6 +664,10 @@ class datetime(date):
     """datetime(
         year, month, day, [hour, [minute, [seconds, [microsecond, [tzinfo]]]]]
     )-> datetime objects"""
+
+    """The smallest possible difference between
+    non-equal datetime objects, timedelta(microseconds=1)."""
+    resolution: _ClassVar[timedelta] = py_datetime.datetime.resolution
 
     def time(self) -> time:
         """Return time object with same time but with tzinfo=None."""
@@ -1293,3 +1298,7 @@ class datetime(date):
 
     def _strftime_cap_z(self) -> str:
         return self.tzname() or ''
+
+
+datetime.max = datetime(MAXYEAR, 12, 12, 23, 59, 59, 999999)
+datetime.min = datetime(1, 1, 1)

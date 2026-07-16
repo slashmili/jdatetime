@@ -184,3 +184,6 @@ class TestJDate(TestCase):
 
         with self.assertRaises(TypeError, msg='fromisoformat: argument must be str'):
             jdatetime.date.fromisoformat(1)
+
+    def test_resolution(self):
+        assert jdatetime.date.resolution == jdatetime.timedelta(days=1)
