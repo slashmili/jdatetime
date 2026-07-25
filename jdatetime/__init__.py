@@ -1165,7 +1165,7 @@ class datetime(date):
         """tz -> convert to local time in new timezone tz"""
         gdt = self.togregorian()
         gdt = gdt.astimezone(tz)
-        return datetime.fromgregorian(datetime=gdt)
+        return datetime.fromgregorian(datetime=gdt, locale=self.locale)
 
     def ctime(self) -> str:
         """Return ctime() style string."""
