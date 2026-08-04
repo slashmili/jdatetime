@@ -128,11 +128,11 @@ class TestJDateTime(TestCase):
         self.assertFalse(today <= today - jdatetime.timedelta(days=1))
         self.assertTrue(today + jdatetime.timedelta(days=1) > today)
         self.assertTrue(today + jdatetime.timedelta(days=30) >= today)
-        self.assertTrue(today == today)
-        self.assertFalse(today > today)
-        self.assertFalse(today < today)
-        self.assertTrue(today >= today)
-        self.assertTrue(today <= today)
+        self.assertTrue(today == today)  # noqa: PLR0124
+        self.assertFalse(today > today)  # noqa: PLR0124
+        self.assertFalse(today < today)  # noqa: PLR0124
+        self.assertTrue(today >= today)  # noqa: PLR0124
+        self.assertTrue(today <= today)  # noqa: PLR0124
         not_today = jdatetime.date(today.year, today.month, today.day) + jdatetime.timedelta(days=1)
         self.assertTrue(today != not_today)
 
@@ -444,9 +444,11 @@ class TestJDateTime(TestCase):
             ('+012345123456', '%z', "time data '+012345123456' does not match format '%z'"),
         ]
         for date_string, date_format, msg in tests:
-            with self.subTest(date_string=date_string, date_format=date_format, msg=msg):
-                with self.assertRaises(ValueError, msg=msg):
-                    jdatetime.datetime.strptime(date_string, date_format)
+            with (
+                self.subTest(date_string=date_string, date_format=date_format, msg=msg),
+                self.assertRaises(ValueError, msg=msg),
+            ):
+                jdatetime.datetime.strptime(date_string, date_format)
 
     def test_strptime_A_p_j_directives(self):
         dt = jdatetime.datetime(1401, 2, 3, 4)
