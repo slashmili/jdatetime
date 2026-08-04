@@ -637,7 +637,7 @@ class TestJDateTime(TestCase):
         try:
             import pytz
             from pytz import timezone
-        except Exception:
+        except ImportError:
             pytz = None
         if pytz:
             tehran = timezone('Asia/Tehran')

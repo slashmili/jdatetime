@@ -45,7 +45,6 @@ line-length = 110
 format.quote-style = 'single'
 lint.isort.combine-as-imports = true
 lint.ignore = [
-    'BLE001', # blind-except
     'DTZ', # flake8-datetimez
 ]
 
