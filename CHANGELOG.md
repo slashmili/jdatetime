@@ -4,6 +4,7 @@
 
 ### Fixed
 
+* `%I` and `%-I` now render the 12-hour clock instead of duplicating `%H`
 * pass Gregorian to tzinfo.dst #188
 * typing: use int for fold #186
 

@@ -211,6 +211,31 @@ class TestJDateTime(TestCase):
         dt = jdatetime.datetime(1389, 2, 17, 19, 10, 2, tzinfo=teh)
         self.assertEqual(dt.strftime('%Z %z'), 'IRDT +0330')
 
+    def test_strftime_I_directive_uses_twelve_hour_clock(self):
+        import datetime as _std
+
+        # %I and %-I must render the 12-hour clock (1..12), matching stdlib.
+        for hour in range(24):
+            with self.subTest(hour=hour):
+                jd = jdatetime.datetime(1400, 1, 1, hour, 5, 0)
+                std = _std.datetime(2020, 1, 1, hour, 5, 0)
+                self.assertEqual(jd.strftime('%I'), std.strftime('%I'))
+                self.assertEqual(jd.strftime('%-I'), std.strftime('%-I'))
+                self.assertEqual(jd._hour12, int(std.strftime('%I')))
+                # %I must be consistent with the (correct) %p directive:
+                # reconstructing the 24-hour value from (%p, %I) round-trips.
+                twelve = int(jd.strftime('%I'))
+                base = 0 if twelve == 12 else twelve
+                reconstructed = base + (12 if jd.strftime('%p') == 'PM' else 0)
+                self.assertEqual(reconstructed, hour)
+        # Spot-check the values that the previous 24-hour behaviour got wrong.
+        self.assertEqual(jdatetime.datetime(1400, 1, 1, 0, 0).strftime('%I'), '12')
+        self.assertEqual(jdatetime.datetime(1400, 1, 1, 13, 0).strftime('%I'), '01')
+        self.assertEqual(jdatetime.datetime(1400, 1, 1, 23, 0).strftime('%I'), '11')
+        self.assertEqual(jdatetime.datetime(1400, 1, 1, 13, 0).strftime('%-I'), '1')
+        # A plain date (no time component) is midnight -> 12.
+        self.assertEqual(jdatetime.date(1400, 1, 1).strftime('%I'), '12')
+
     def test_strftime_fa_locale_uses_short_month_names_for_b_directive(self):
         tests = [
             (1, 'فرو', 'فروردین'),
