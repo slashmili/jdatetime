@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+* pass Gregorian to tzinfo.dst #188
+
 ## [6.0.2] 2026-08-06
 
 ### Fixed
