@@ -314,6 +314,17 @@ class TestJDateTime(TestCase):
         args = {'year': 1390, 'month': 12, 'hour': 13}
         self.assertEqual(dt.replace(**args).locale, 'nl_NL')
 
+    def test_astimezone_keeps_locale(self):
+        orig_locale = jdatetime.get_locale()
+        jdatetime.set_locale('en_US')
+        self.addCleanup(jdatetime.set_locale, orig_locale)
+
+        teh = TehranTime()
+        dt = jdatetime.datetime(1397, 8, 17, 7, 54, 28, tzinfo=teh, locale='fa_IR')
+        converted = dt.astimezone(datetime.timezone.utc)
+
+        self.assertEqual(converted.locale, 'fa_IR')
+
     def test_replace_remove_tzinfo(self):
         teh = TehranTime()
         dt = jdatetime.datetime(1397, 8, 17, 7, 54, 28, tzinfo=teh)
