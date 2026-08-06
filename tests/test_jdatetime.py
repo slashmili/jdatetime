@@ -1100,3 +1100,24 @@ class TestJdatetimeGetSetLocale(TestCase):
     def test_min_max(self):
         assert jdatetime.datetime.max == jdatetime.datetime(9377, 12, 12, 23, 59, 59, 999999)
         assert jdatetime.datetime.min == jdatetime.datetime(1, 1, 1, 0, 0)
+
+    def test_dst_calculation_with_timezone(self):
+        # Let's use America/New_York timezone
+        # In 2026:
+        # July 17 (Jalali: 1405-04-26) is in DST (+1 hour offset)
+        # Dec 17 (Jalali: 1405-09-26) is NOT in DST (0 offset)
+        tz = ZoneInfo('America/New_York')
+
+        # 1. Test during Daylight Saving Time (Summer)
+        summer_jdt = jdatetime.datetime(1405, 4, 26, 12, 0, tzinfo=tz)
+
+        self.assertEqual(summer_jdt.dst(), jdatetime.timedelta(hours=1))
+
+        # 2. Test during Standard Time (Winter)
+        winter_jdt = jdatetime.datetime(1405, 9, 26, 12, 0, tzinfo=tz)
+        self.assertEqual(winter_jdt.dst(), jdatetime.timedelta(0))
+
+    def test_dst_returns_none_without_tz(self):
+        # Naive datetime should return None
+        naive_jdt = jdatetime.datetime(1405, 4, 26, 12, 0)
+        self.assertIsNone(naive_jdt.dst())

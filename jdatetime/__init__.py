@@ -1171,11 +1171,10 @@ class datetime(date):
         """Return ctime() style string."""
         return self.strftime('%c')
 
-    # TODO: check what this def does !
     def dst(self) -> timedelta | None:
         """Return self.tzinfo.dst(self)"""
         if self.tzinfo:
-            return self.tzinfo.dst(self)
+            return self.tzinfo.dst(self.togregorian())
         return None
 
     def isoformat(self, sep: str = 'T', timespec: str = 'auto') -> str:
