@@ -661,7 +661,7 @@ class TestJDateTime(TestCase):
 
     def set_fa_locale(self):
         if platform.system() == 'Windows':
-            locale.setlocale(locale.LC_ALL, 'Persian')
+            locale.setlocale(locale.LC_ALL, jdatetime.FA_LOCALE)
         else:
             locale.setlocale(locale.LC_ALL, 'fa_IR')
 
