@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [6.0.2] 2026-08-06
 
 ### Fixed
 
-* `astimezone()` no longer resets the instance locale to the global default
+* `astimezone()` no longer resets the instance locale to the global default #190
 
 ## [6.0.1] - 2026-07-15
 
