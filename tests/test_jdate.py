@@ -33,7 +33,7 @@ class TestJDate(TestCase):
     def test_locale_property_is_read_only(self):
         date = jdatetime.date(1397, 4, 22)
         with self.assertRaises(AttributeError):
-            date.locale = jdatetime.FA_LOCALE
+            date.locale = jdatetime.FA_LOCALE  # type: ignore
 
     def test_locale_property_returns_locale(self):
         date = jdatetime.date(1397, 4, 22, locale='nl_NL')
@@ -41,7 +41,7 @@ class TestJDate(TestCase):
 
     def test_init_locale_is_named_argument_only(self):
         with self.assertRaises(TypeError):
-            datetime.date(1397, 4, 22, 'nl_NL')
+            datetime.date(1397, 4, 22, 'nl_NL')  # type: ignore
 
     def test_init_accepts_instance_locale(self):
         date = jdatetime.date(1397, 4, 23, locale=jdatetime.FA_LOCALE)
@@ -93,23 +93,23 @@ class TestJDate(TestCase):
         date = jdatetime.date(1402, 1, 9)
         unknown_type = object()
         assert (
-            date.__sub__(unknown_type)
-            is date.__rsub__(unknown_type)
-            is date.__add__(unknown_type)
-            is date.__radd__(unknown_type)
+            date.__sub__(unknown_type)  # type: ignore
+            is date.__rsub__(unknown_type)  # type: ignore
+            is date.__add__(unknown_type)  # type: ignore
+            is date.__radd__(unknown_type)  # type: ignore
             is date.__eq__(unknown_type)
             is date.__ne__(unknown_type)
-            is date.__lt__(unknown_type)
-            is date.__le__(unknown_type)
-            is date.__gt__(unknown_type)
-            is date.__ge__(unknown_type)
+            is date.__lt__(unknown_type)  # type: ignore
+            is date.__le__(unknown_type)  # type: ignore
+            is date.__gt__(unknown_type)  # type: ignore
+            is date.__ge__(unknown_type)  # type: ignore
             is NotImplemented
         )
         with self.assertRaisesRegex(
             TypeError,
             r"unsupported operand type\(s\) for \+=: 'date' and 'object'",
         ):
-            date += unknown_type
+            date += unknown_type  # type: ignore
 
     def test_reverse_add_time_delta(self):
         date = jdatetime.date(1397, 4, 22, locale='nl_NL')
@@ -183,7 +183,7 @@ class TestJDate(TestCase):
             jdatetime.date.fromisoformat('some-invalid-format')
 
         with self.assertRaises(TypeError, msg='fromisoformat: argument must be str'):
-            jdatetime.date.fromisoformat(1)
+            jdatetime.date.fromisoformat(1)  # type: ignore
 
     def test_resolution(self):
         assert jdatetime.date.resolution == jdatetime.timedelta(days=1)

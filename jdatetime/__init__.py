@@ -15,7 +15,7 @@ from functools import partial as _partial
 from typing import ClassVar as _ClassVar, overload as _overload
 
 try:
-    from greenlet import getcurrent as get_ident
+    from greenlet import getcurrent as get_ident  # type: ignore
 except ImportError:
     from _thread import get_ident
 
@@ -354,8 +354,8 @@ class date:
         (y, m, d) = GregorianToJalali(d.year, d.month, d.day).getJalaliList()
         return date(y, m, d)
 
-    @staticmethod
-    def fromisoformat(date_string: str) -> date:
+    @classmethod
+    def fromisoformat(cls, date_string: str) -> date:
         """
         Convert an ISO 8601 formatted string to a jdatetime.date
         """
@@ -943,7 +943,7 @@ class datetime(date):
         minute: int | None = None,
         second: int | None = None,
         microsecond: int | None = None,
-        tzinfo: py_datetime.tzinfo | None = True,
+        tzinfo: py_datetime.tzinfo | None | typing.Literal[True] = True,
         fold: int | None = None,
     ) -> datetime:
         """Return datetime with new specified fields."""
