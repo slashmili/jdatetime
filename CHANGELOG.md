@@ -5,6 +5,8 @@
 ### Fixed
 
 * pass Gregorian to tzinfo.dst #188
+* typing: use int for fold #186
+
 
 ## [6.0.2] 2026-08-06
 
