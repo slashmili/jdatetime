@@ -680,7 +680,7 @@ class datetime(date):
         microsecond: int | None = None,
         tzinfo: tzinfo | None = None,
         *,
-        fold: typing.Literal[0, 1] = 0,
+        fold: int = 0,
         **kwargs,
     ):
         date.__init__(self, year, month, day, **kwargs)
@@ -888,7 +888,7 @@ class datetime(date):
         return self.__time.tzinfo
 
     @property
-    def fold(self) -> typing.Literal[0, 1]:
+    def fold(self) -> int:
         return self._fold
 
     @staticmethod
@@ -944,7 +944,7 @@ class datetime(date):
         second: int | None = None,
         microsecond: int | None = None,
         tzinfo: py_datetime.tzinfo | None = True,
-        fold: typing.Literal[0, 1] | None = None,
+        fold: int | None = None,
     ) -> datetime:
         """Return datetime with new specified fields."""
         t_year = self.year
