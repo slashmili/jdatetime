@@ -219,7 +219,7 @@ class TestJDateTime(TestCase):
                 jd = jdatetime.datetime(1400, 1, 1, hour, 5, 0)
                 std = _std.datetime(2020, 1, 1, hour, 5, 0)
                 self.assertEqual(jd.strftime('%I'), std.strftime('%I'))
-                self.assertEqual(jd.strftime('%-I'), std.strftime('%-I'))
+                self.assertEqual(jd.strftime('%-I'), std.strftime('%I').lstrip('0'))
                 self.assertEqual(jd._hour12, int(std.strftime('%I')))
                 # %I must be consistent with the (correct) %p directive:
                 # reconstructing the 24-hour value from (%p, %I) round-trips.
