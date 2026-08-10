@@ -1,16 +1,17 @@
 # Changelog
 
-## Unreleased
+## [6.1.0] 2026-08-10
 
 ### Fixed
 
 * `%I` and `%-I` now render the 12-hour clock instead of duplicating `%H`
-* pass Gregorian to tzinfo.dst #188
-* typing: use int for fold #186
+* Pass a Gregorian datetime to `tzinfo.dst()` #188
+* Use `int` for the `fold` type, matching the standard library #186
 
 ### Added
 
-* Add `date.strptime()` and make `strptime()` preserve subclasses, matching the standard library behavior
+* Add `date.strptime()` and make `date.strptime()`, `datetime.strptime()`, and
+  `date.fromisoformat()` preserve subclasses, matching standard library behavior
 
 
 ## [6.0.2] 2026-08-06
