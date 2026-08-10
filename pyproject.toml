@@ -52,4 +52,5 @@ lint.ignore = [
 dev = [
     "pytest>=8.4.2",
     "tox>=4.30.3",
+    "tzdata; sys_platform == 'win32'",
 ]
