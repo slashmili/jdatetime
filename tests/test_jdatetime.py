@@ -780,3 +780,13 @@ def test_pickle():
 def test_unpickle_older_datetime_object():
     dt = load_pickle('jdatetime_py3_jdatetime3.7.pickle')
     assert dt == jdatetime.datetime(1400, 10, 11, 1, 2, 3, 30)
+
+
+def test_strptime_returns_subclass():
+    class MyDateTime(jdatetime.datetime):
+        pass
+
+    result = MyDateTime.strptime('1405-05-19 12:34:56', '%Y-%m-%d %H:%M:%S')
+
+    assert type(result) is MyDateTime
+    assert result == MyDateTime(1405, 5, 19, 12, 34, 56)

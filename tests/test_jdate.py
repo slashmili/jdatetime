@@ -201,3 +201,30 @@ def test_fromisoformat():
 
 def test_resolution():
     assert jdatetime.date.resolution == jdatetime.timedelta(days=1)
+
+
+@pytest.mark.parametrize(
+    ('date_string', 'format'),
+    [
+        ('1405-05-19', '%Y-%m-%d'),
+        ('1405-05-19 13', '%Y-%m-%d %H'),
+        ('1405-05-19 13:45', '%Y-%m-%d %H:%M'),
+        ('1405-05-19 13:45:59', '%Y-%m-%d %H:%M:%S'),
+        ('1405-05-19 13:45:59.123456', '%Y-%m-%d %H:%M:%S.%f'),
+        ('1405-05-19 13:45:59 +0330', '%Y-%m-%d %H:%M:%S %z'),
+    ],
+)
+def test_strptime_discards_time(date_string, format):
+    result = jdatetime.date.strptime(date_string, format)
+
+    assert result == jdatetime.date(1405, 5, 19)
+
+
+def test_strptime_returns_subclass():
+    class MyDate(jdatetime.date):
+        pass
+
+    result = MyDate.strptime('1405-05-19', '%Y-%m-%d')
+
+    assert type(result) is MyDate
+    assert result == MyDate(1405, 5, 19)
