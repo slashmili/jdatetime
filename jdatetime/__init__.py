@@ -623,6 +623,12 @@ class date:
     def aslocale(self, locale: str) -> date:
         return date(self.year, self.month, self.day, locale=locale)
 
+    @classmethod
+    def strptime(cls, date_string: str, format: str) -> date:
+        """Return a date corresponding to date_string, parsed according to format."""
+        dt = datetime.strptime(date_string, format)
+        return cls(dt.year, dt.month, dt.day, locale=dt.locale)
+
 
 date.min = date(MINYEAR, 1, 1)
 date.max = date(MAXYEAR, 12, 30)
@@ -897,8 +903,8 @@ class datetime(date):
     def fold(self) -> int:
         return self._fold
 
-    @staticmethod
-    def strptime(date_string: str, format: str) -> datetime:
+    @classmethod
+    def strptime(cls, date_string: str, format: str) -> datetime:
         """string, format -> new datetime parsed from a string (like time.strptime())"""
         regex = _directives_to_pattern(re.escape(format))
 
@@ -927,9 +933,9 @@ class datetime(date):
                 raise ValueError(f"time data '{date_string}' does not match format '{format}'")
 
         timezone_string = get('z', None)
-        timezone = datetime._timezone_from_string(timezone_string)
+        timezone = cls._timezone_from_string(timezone_string)
 
-        return datetime(
+        return cls(
             year,
             month,
             int(get('d', 1)),
