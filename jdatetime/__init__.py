@@ -757,6 +757,7 @@ class datetime(date):
             now_datetime.second,
             now_datetime.microsecond,
             tz,
+            fold=now_datetime.fold,
         )
 
     @staticmethod
@@ -803,6 +804,7 @@ class datetime(date):
             now_datetime.second,
             now_datetime.microsecond,
             tz,
+            fold=now_datetime.fold,
         )
 
     @staticmethod
@@ -1138,6 +1140,7 @@ class datetime(date):
                     date_param.microsecond,
                     date_param.tzinfo,
                     locale=locale,
+                    fold=getattr(date_param, 'fold', 0),
                 )
             except AttributeError:
                 return datetime(y, m, d, locale=locale)
@@ -1250,6 +1253,7 @@ class datetime(date):
             self.microsecond,
             tzinfo=self.tzinfo,
             locale=locale,
+            fold=self.fold,
         )
 
     @staticmethod
