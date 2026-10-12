@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.1.1] 2026-10-12
+
+### Fixed
+ * fix: preserve fold in datetime conversions #198
+
 ## [6.1.0] 2026-08-10
 
 ### Fixed
