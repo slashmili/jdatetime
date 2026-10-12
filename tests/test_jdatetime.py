@@ -216,11 +216,13 @@ def test_now_preserves_fold(fold, monkeypatch):
         def now(cls, tz=None):
             return gregorian
 
-    monkeypatch.setattr(jdatetime.py_datetime, 'datetime', FrozenDatetime)
-
-    converted = jdatetime.datetime.now(gregorian.tzinfo)
+    # Restore datetime before round-trip checks: subclass combine() can lose fold.
+    with monkeypatch.context() as clock_patch:
+        clock_patch.setattr(jdatetime.py_datetime, 'datetime', FrozenDatetime)
+        converted = jdatetime.datetime.now(gregorian.tzinfo)
 
     assert converted.fold == fold
+    assert converted.utcoffset() == gregorian.utcoffset()
     assert converted.timestamp() == gregorian.timestamp()
 
 
