@@ -3,6 +3,7 @@ import locale
 import pickle
 import platform
 import time
+from types import SimpleNamespace
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -156,6 +157,86 @@ def test_date_conversion_integer_input():
 
     gdatetime = datetime.datetime(2011, 5, 13, 14, 15, 16)
     assert jd_datetime.togregorian() == gdatetime
+
+
+@pytest.mark.parametrize('fold', [0, 1])
+@pytest.mark.parametrize('argument', ['date', 'datetime'])
+def test_fromgregorian_preserves_fold(fold, argument):
+    gregorian = datetime.datetime(
+        2021, 11, 7, 1, 30, 15, 123456, tzinfo=ZoneInfo('America/New_York'), fold=fold
+    )
+
+    converted = jdatetime.datetime.fromgregorian(**{argument: gregorian})
+
+    assert converted.fold == fold
+    assert converted.togregorian().fold == fold
+    assert converted.utcoffset() == gregorian.utcoffset()
+    assert converted.timestamp() == gregorian.timestamp()
+
+
+def test_fromgregorian_accepts_datetime_like_object_without_fold():
+    gregorian = SimpleNamespace(
+        year=2021, month=11, day=7, hour=1, minute=30, second=15, microsecond=123456, tzinfo=None
+    )
+
+    converted = jdatetime.datetime.fromgregorian(datetime=gregorian)
+
+    assert converted.togregorian() == datetime.datetime(2021, 11, 7, 1, 30, 15, 123456)
+    assert converted.fold == 0
+
+
+def test_astimezone_preserves_fold():
+    gregorian = datetime.datetime(2021, 11, 7, 6, 30, tzinfo=datetime.timezone.utc)
+    original = jdatetime.datetime.fromgregorian(datetime=gregorian, locale='nl_NL')
+    timezone = ZoneInfo('America/New_York')
+
+    converted = original.astimezone(timezone)
+
+    assert converted.fold == gregorian.astimezone(timezone).fold == 1
+    assert converted.timestamp() == original.timestamp()
+    assert converted.locale == original.locale
+
+
+@pytest.mark.parametrize('fold', [0, 1])
+def test_fromtimestamp_preserves_fold(fold):
+    gregorian = datetime.datetime(2021, 11, 7, 1, 30, tzinfo=ZoneInfo('America/New_York'), fold=fold)
+
+    converted = jdatetime.datetime.fromtimestamp(gregorian.timestamp(), gregorian.tzinfo)
+
+    assert converted.fold == fold
+    assert converted.timestamp() == gregorian.timestamp()
+
+
+@pytest.mark.parametrize('fold', [0, 1])
+def test_now_preserves_fold(fold, monkeypatch):
+    gregorian = datetime.datetime(2021, 11, 7, 1, 30, tzinfo=ZoneInfo('America/New_York'), fold=fold)
+
+    class FrozenDatetime(datetime.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return gregorian
+
+    # Restore datetime before round-trip checks: subclass combine() can lose fold.
+    with monkeypatch.context() as clock_patch:
+        clock_patch.setattr(jdatetime.py_datetime, 'datetime', FrozenDatetime)
+        converted = jdatetime.datetime.now(gregorian.tzinfo)
+
+    assert converted.fold == fold
+    assert converted.utcoffset() == gregorian.utcoffset()
+    assert converted.timestamp() == gregorian.timestamp()
+
+
+@pytest.mark.parametrize('fold', [0, 1])
+def test_aslocale_preserves_fold(fold):
+    original = jdatetime.datetime(
+        1400, 8, 16, 1, 30, tzinfo=ZoneInfo('America/New_York'), fold=fold, locale='en_US'
+    )
+
+    converted = original.aslocale('fa_IR')
+
+    assert converted.fold == fold
+    assert converted.timestamp() == original.timestamp()
+    assert converted.locale == 'fa_IR'
 
 
 def test_strftime():
